@@ -1,0 +1,17 @@
+main:
+  host: 0.0.0.0
+  port: 9090
+
+log:
+  level: debug        # panic, fatal, error, warn, info, debug, trace
+  out: ./temp/log.txt # stdout or [filepath]
+
+gin:
+  mode: debug         # debug, release, test
+
+mysql:
+  user: douyin_12306
+  passwd: d1o2u3y0i6n
+  host: 0.0.0.0
+  port: 3306
+  db_name: douyin_12306
