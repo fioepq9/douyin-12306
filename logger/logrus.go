@@ -10,9 +10,6 @@ import (
 
 func newLogrusLogger() *logrusLogger {
 	l := logrus.New()
-	// use go-colorable
-	l.SetFormatter(&logrus.TextFormatter{ForceColors: true})
-	l.SetOutput(colorable.NewColorableStdout())
 
 	// set log-level
 	switch config.C.Log.Level {
@@ -42,8 +39,14 @@ func newLogrusLogger() *logrusLogger {
 		if err != nil {
 			panic("log init error " + err.Error())
 		}
+		l.SetFormatter(&logrus.TextFormatter{TimestampFormat: "2006/01/02-15:04:05"})
 		l.SetOutput(output)
+	} else {
+		// use go-colorable
+		l.SetFormatter(&logrus.TextFormatter{ForceColors: true, TimestampFormat: "2006/01/02-15:04:05"})
+		l.SetOutput(colorable.NewColorableStdout())
 	}
+
 	return &logrusLogger{logger: l}
 }
 

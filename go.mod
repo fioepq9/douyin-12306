@@ -5,7 +5,9 @@ go 1.18
 require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/mattn/go-colorable v0.1.12
+	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
+	github.com/sony/sonyflake v1.0.0
 	github.com/spf13/viper v1.11.0
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.5
