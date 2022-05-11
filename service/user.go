@@ -49,7 +49,7 @@ func (f *RegisterInfoFlow) Do() (*RegisterInfo, error) {
 	return f.registerInfo, nil
 }
 
-// checkParam
+// checkParam 检查参数
 func (f *RegisterInfoFlow) checkParam() error {
 	if len(f.username) > usernameMaxLength {
 		return errors.New("the username is too long")
