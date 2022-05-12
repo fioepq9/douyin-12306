@@ -17,7 +17,13 @@ type RegisterInfo struct {
 }
 
 func Register(username string, password string) (*RegisterInfo, error) {
-	return NewRegisterInfoFlow(username, password).Do()
+	flow := NewRegisterInfoFlow(username, password)
+	flowProcessor := FlowProcessor{flow}
+	err := flowProcessor.Do()
+	if err != nil {
+		return nil, err
+	}
+	return flow.registerInfo, nil
 }
 
 func NewRegisterInfoFlow(username string, password string) *RegisterInfoFlow {
@@ -34,19 +40,6 @@ type RegisterInfoFlow struct {
 	registerInfo *RegisterInfo
 
 	userId int64
-}
-
-func (f *RegisterInfoFlow) Do() (*RegisterInfo, error) {
-	if err := f.checkParam(); err != nil {
-		return nil, err
-	}
-	if err := f.prepareInfo(); err != nil {
-		return nil, err
-	}
-	if err := f.packInfo(); err != nil {
-		return nil, err
-	}
-	return f.registerInfo, nil
 }
 
 // checkParam
