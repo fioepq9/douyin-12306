@@ -2,47 +2,23 @@
 
 ## 项目结构
 
-```
-├─config        配置模块 => 框架 viper, 优先级: 环境变量 > config.yml > 默认配置 
-├─controller    Management of the REST interface to the business logic
-├─logger        日志模块 => 框架 logrus
-├─repository	Storage of the entity beans in the system
-│  └─mysqlDB        MySQL => 框架 gorm
-├─router        路由配置
-├─service       Business Logic implementations
-├─temp          临时文件目录
-├─config.yml    
-├─docker-compose.yml
-├─Dockerfile
-└─main.go
-```
-
-![img](https://miro.medium.com/max/1400/1*neBcAZJyLGpE7KHc3sH8bw.png)
-
-## 项目运行
-
-> [Docker Compose配置文件详解（V3）](https://blog.51cto.com/u_15329153/3371134)
-
-+ 启动
+> [项目结构 · gin实践系列 · 看云 (kancloud.cn)](https://static.kancloud.cn/lhj0702/sockstack_gin/1805357)
 
 ```bash
-$ docker-compose up
-```
-
-+ 启动并重新构建所有镜像
-
-```bash
-$ docker-compose up --build
-```
-
-+ 关闭
-
-```bash
-$ docker-compose down
-```
-
-+ 关闭并删除所有本地镜像
-
-```bash
-$ docker-compose down --rmi local
+├─config		# 配置模块目录
+├─controller	# 控制器目录
+├─logger		# 日志模块目录
+├─models		# 模型目录，负责项目的数据存储部分，例如各个模块的Mysql表的读写模型。
+├─pkg			# 自定义的工具类等
+│  ├─e			# 项目统一的响应定义，如错误码，通用的错误信息，响应的结构体
+│  └─util		# 工具类目录
+├─public		# 静态资源目录
+├─repository	# 数据操作层，定义各种数据操作。
+├─requests		# 定义入参及入参校验规则
+├─responses		# 定义响应的数据
+├─router		# 路由目录
+├─service		# 服务定义目录
+├─temp			# 临时文件目录，包含日志等信息。
+├─config.yml	# 项目配置文件
+└─main.go		# 项目入口，负责Gin框架的初始化
 ```

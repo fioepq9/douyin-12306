@@ -58,8 +58,5 @@ func init() {
 		"Redis config": config.C.Redis,
 	})
 
-	logger.L.Info("Init repository success", map[string]interface{}{
-		"package":  "repository",
-		"function": "init",
-	})
+	logger.L.Info("Init repository success", nil)
 }

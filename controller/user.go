@@ -2,32 +2,23 @@ package controller
 
 import (
 	"douyin-12306/logger"
+	"douyin-12306/requests"
+	"douyin-12306/responses"
 	"douyin-12306/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type UserRegisterRequest struct {
-	Username string `form:"username"`
-	Password string `form:"password"`
-}
-
-type UserRegisterResponse struct {
-	Response
-	UserId int64  `json:"user_id"`
-	Token  string `json:"token"`
-}
-
 func Register(c *gin.Context) {
 	var (
-		req UserRegisterRequest
+		req requests.UserRegisterRequest
 		err error
 	)
 
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, UserRegisterResponse{
-			Response: Response{
+		c.JSON(http.StatusOK, responses.UserRegisterResponse{
+			Response: responses.Response{
 				StatusCode: 1,
 				StatusMsg:  err.Error(),
 			},
@@ -39,10 +30,10 @@ func Register(c *gin.Context) {
 		"password": req.Password,
 	})
 
-	info, err := service.Register(req.Username, req.Password)
+	info, err := service.Register(c, req.Username, req.Password)
 	if err != nil {
-		c.JSON(http.StatusOK, UserRegisterResponse{
-			Response: Response{
+		c.JSON(http.StatusOK, responses.UserRegisterResponse{
+			Response: responses.Response{
 				StatusCode: 1,
 				StatusMsg:  err.Error(),
 			},
@@ -54,8 +45,8 @@ func Register(c *gin.Context) {
 		"token":   info.Token,
 	})
 
-	c.JSON(http.StatusOK, UserRegisterResponse{
-		Response: Response{
+	c.JSON(http.StatusOK, responses.UserRegisterResponse{
+		Response: responses.Response{
 			StatusCode: 0,
 			StatusMsg:  "success",
 		},

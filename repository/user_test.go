@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"os"
 	"testing"
 )
@@ -10,6 +11,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestUserDAO_Register(t *testing.T) {
-	id, err := NewUserDAOInstance().Register("username", "password", "username")
+	ctx := context.Background()
+	id, err := NewUserDAOInstance().Register(ctx, "username101", "password101", "username101")
 	t.Log(id, err)
 }

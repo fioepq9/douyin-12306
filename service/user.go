@@ -1,9 +1,9 @@
 package service
 
 import (
+	"context"
+	"douyin-12306/models"
 	"douyin-12306/repository"
-	"douyin-12306/utils/redisUtil"
-	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"github.com/satori/go.uuid"
 )
@@ -21,12 +21,13 @@ type RegisterInfo struct {
 }
 
 type RegisterInfoFlow struct {
+	ctx      context.Context
 	username string
 	password string
 
-	registerInfo *RegisterInfo
+	info *RegisterInfo
 
-	insertUser *repository.User
+	user *models.User
 }
 
 type UserDTO struct {
@@ -43,21 +44,22 @@ func NewUserDTO() *UserDTO {
 	}
 }
 
-func NewRegisterInfoFlow(username string, password string) *RegisterInfoFlow {
+func NewRegisterInfoFlow(ctx context.Context, username string, password string) *RegisterInfoFlow {
 	return &RegisterInfoFlow{
+		ctx:      ctx,
 		username: username,
 		password: password,
 	}
 }
 
-func Register(username string, password string) (*RegisterInfo, error) {
-	flow := NewRegisterInfoFlow(username, password)
+func Register(ctx context.Context, username string, password string) (*RegisterInfo, error) {
+	flow := NewRegisterInfoFlow(ctx, username, password)
 	flowProcessor := FlowProcessor{flow}
 	err := flowProcessor.Do()
 	if err != nil {
 		return nil, err
 	}
-	return flow.registerInfo, nil
+	return flow.info, nil
 }
 
 // 创建token
@@ -85,12 +87,12 @@ func (f *RegisterInfoFlow) prepareInfo() (err error) {
 		defaultName = f.username
 	}
 
-	user, err := repository.NewUserDAOInstance().Register(f.username, f.password, defaultName)
+	user, err := repository.NewUserDAOInstance().Register(f.ctx, f.username, f.password, defaultName)
 	if err != nil {
 		return err
 	}
 
-	f.insertUser = user
+	f.user = user
 
 	return nil
 }
@@ -98,29 +100,30 @@ func (f *RegisterInfoFlow) prepareInfo() (err error) {
 // packInfo 将 repository 层返回的数据包装，及进行其他逻辑操作
 func (f *RegisterInfoFlow) packInfo() error {
 	// 1.获取redis连接客户端
-	redisClient := redisUtil.NewRedisClient()
+	// redisClient := redisUtil.NewRedisClient()
 
 	// 2.生成用户token
 	token := newToken()
 
 	// 3.将用户信息（转为DTO）存储到redis中
-	user := f.insertUser
+	// user := f.user
 	// 3.1 User转UserDTO
-	userDTO := NewUserDTO()
-	err := copier.Copy(userDTO, user)
-	if err != nil {
-		return err
-	}
+	// userDTO := NewUserDTO()
+	// err := copier.Copy(userDTO, user)
+	// if err != nil {
+	// 	return err
+	// }
 
 	// 3.2 存入redis
-	err = redisUtil.RedisSetSimpleStruct(redisClient, token, userDTO)
+	// err = redisUtil.RedisSetSimpleStruct(redisClient, token, userDTO)
+	err := repository.R.Redis.Set(f.ctx, token, f.user, f.user.Expiration()).Err()
 	if err != nil {
 		return err
 	}
 
 	// 4. 将返回信息放置到registerInfo
-	f.registerInfo = &RegisterInfo{
-		Id:    f.insertUser.Id,
+	f.info = &RegisterInfo{
+		Id:    f.user.Id,
 		Token: token,
 	}
 	return nil

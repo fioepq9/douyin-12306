@@ -1,5 +1,9 @@
 package logger
 
+import (
+	"douyin-12306/config"
+)
+
 var L logger
 
 type logger interface {
@@ -14,8 +18,7 @@ type logger interface {
 
 func init() {
 	L = newLogrusLogger()
-	L.Info("logger init success", map[string]interface{}{
-		"package":  "logger",
-		"function": "init",
+	L.Info("Init logger success", map[string]interface{}{
+		"Logger config": config.C.Log,
 	})
 }

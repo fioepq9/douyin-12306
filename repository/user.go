@@ -1,24 +1,16 @@
 package repository
 
 import (
+	"context"
+	"douyin-12306/logger"
+	"douyin-12306/models"
+	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 	"github.com/sony/sonyflake"
 	"gorm.io/gorm"
 	"sync"
 )
-
-type User struct {
-	Id            int64  `gorm:"column:id"`
-	Username      string `gorm:"column:username"`
-	Password      string `gorm:"column:password"`
-	Name          string `gorm:"column:name"`
-	FollowCount   int64  `gorm:"column:follow_count"`
-	FollowerCount int64  `gorm:"column:follower_count"`
-}
-
-func (User) TableName() string {
-	return "user"
-}
 
 type UserDAO struct {
 	sonyflake *sonyflake.Sonyflake
@@ -38,9 +30,25 @@ func NewUserDAOInstance() *UserDAO {
 	return userDAO
 }
 
-func (d *UserDAO) Register(username string, password string, name string) (*User, error) {
-	var user User
-	tx := R.MySQL.Table(User{}.TableName()).Begin()
+func (d *UserDAO) Register(ctx context.Context, username string, password string, name string) (*models.User, error) {
+	var user models.User
+
+	key := fmt.Sprintf("%s:%s", models.User{}.UsernameKeyPrefix(), username)
+	err := R.Redis.Get(ctx, key).Scan(&user)
+	if !errors.Is(err, redis.Nil) {
+		if err == nil {
+			logger.L.Debug("repository.Register found user in Redis", nil)
+			err = errors.New("用户名已存在")
+			return nil, err
+		}
+		// 用日志打印替代返回 error
+		//	Redis不可用时的降级策略
+		logger.L.Error("Redis Get Error In repository.Register", map[string]interface{}{
+			"error": err,
+		})
+	}
+
+	tx := R.MySQL.Table(models.User{}.TableName()).Begin()
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
@@ -48,9 +56,10 @@ func (d *UserDAO) Register(username string, password string, name string) (*User
 	}()
 
 	// Check：该username是否已存在
-	err := tx.Where(&User{Username: username}).Take(&user).Error
+	err = tx.Where(&models.User{Username: username}).Take(&user).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err == nil {
+			logger.L.Debug("repository.Register found user in MySQL", nil)
 			err = errors.New("用户名已存在")
 		}
 		tx.Rollback()
@@ -66,7 +75,7 @@ func (d *UserDAO) Register(username string, password string, name string) (*User
 	id := int64(sonyId)
 
 	// Insert user
-	user = User{
+	user = models.User{
 		Id:       id,
 		Username: username,
 		Password: password,
@@ -78,5 +87,18 @@ func (d *UserDAO) Register(username string, password string, name string) (*User
 		return nil, err
 	}
 
-	return &user, tx.Commit().Error
+	err = tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	err = R.Redis.Set(ctx, key, &user, user.Expiration()).Err()
+	if err != nil {
+		logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
+			"error": err,
+		})
+	}
+
+	return &user, nil
 }
