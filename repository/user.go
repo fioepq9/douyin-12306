@@ -3,14 +3,17 @@ package repository
 import (
 	"github.com/pkg/errors"
 	"github.com/sony/sonyflake"
+	"gorm.io/gorm"
 	"sync"
 )
 
 type User struct {
-	Id       int64  `gorm:"column:id"`
-	Username string `gorm:"column:username"`
-	Password string `gorm:"column:password"`
-	Name     string `gorm:"column:name"`
+	Id            int64  `gorm:"column:id"`
+	Username      string `gorm:"column:username"`
+	Password      string `gorm:"column:password"`
+	Name          string `gorm:"column:name"`
+	FollowCount   int64  `gorm:"column:follow_count"`
+	FollowerCount int64  `gorm:"column:follower_count"`
 }
 
 func (User) TableName() string {
@@ -18,7 +21,7 @@ func (User) TableName() string {
 }
 
 type UserDAO struct {
-	snowflake *sonyflake.Sonyflake
+	sonyflake *sonyflake.Sonyflake
 }
 
 var (
@@ -29,14 +32,13 @@ var (
 func NewUserDAOInstance() *UserDAO {
 	userOnce.Do(func() {
 		userDAO = &UserDAO{
-			snowflake: sonyflake.NewSonyflake(sonyflake.Settings{}),
+			sonyflake: sonyflake.NewSonyflake(sonyflake.Settings{}),
 		}
 	})
 	return userDAO
 }
 
-func (d *UserDAO) Register(username string, password string, name string) (insertUser *User, err error) {
-	var user User
+func (d *UserDAO) Register(username string, password string, name string) (user *User, err error) {
 	tx := R.MySQL.Table(User{}.TableName()).Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -44,37 +46,36 @@ func (d *UserDAO) Register(username string, password string, name string) (inser
 		}
 	}()
 
-	// check user exist
-	err = tx.Where(&User{Username: username}).Find(&user).Error
-	if err != nil {
+	// Check：该username是否已存在
+	err = tx.Where(&User{Username: username}).Take(user).Error
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		if err == nil {
+			err = errors.New("用户名已存在")
+		}
 		tx.Rollback()
 		return nil, err
 	}
-	if user.Id != 0 {
-		tx.Rollback()
-		return nil, errors.New("Found a user with the same username")
-	}
 
-	// generate ID
-	snowflakeId, err := d.snowflake.NextID()
+	// 使用 sonyflake 生成 ID
+	sonyId, err := d.sonyflake.NextID()
 	if err != nil {
 		tx.Rollback()
-		return nil, errors.New("snowflake generate ID fail")
+		return nil, errors.New("sonyflake generate ID fail")
 	}
-	id := int64(snowflakeId)
+	id := int64(sonyId)
 
 	// Insert user
-	insertUser = &User{
+	user = &User{
 		Id:       id,
 		Username: username,
 		Password: password,
 		Name:     name,
 	}
-	err = tx.Create(insertUser).Error
+	err = tx.Create(user).Error
 	if err != nil {
 		tx.Rollback()
 		return nil, err
 	}
 
-	return insertUser, tx.Commit().Error
+	return user, tx.Commit().Error
 }

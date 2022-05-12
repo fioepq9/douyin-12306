@@ -24,7 +24,9 @@ func init() {
 		config.C.Mysql.Host,
 		config.C.Mysql.Port,
 		config.C.Mysql.DBName)
-	R.MySQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	R.MySQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		PrepareStmt: true,
+	})
 	if err != nil {
 		logger.L.Panic("MySQL initial fail", map[string]interface{}{
 			"package":      "repository",
