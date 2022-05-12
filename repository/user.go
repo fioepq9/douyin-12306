@@ -35,7 +35,7 @@ func NewUserDAOInstance() *UserDAO {
 	return userDAO
 }
 
-func (d *UserDAO) Register(username string, password string, name string) (id int64, err error) {
+func (d *UserDAO) Register(username string, password string, name string) (insertUser *User, err error) {
 	var user User
 	tx := R.MySQL.Table(User{}.TableName()).Begin()
 	defer func() {
@@ -48,32 +48,33 @@ func (d *UserDAO) Register(username string, password string, name string) (id in
 	err = tx.Where(&User{Username: username}).Find(&user).Error
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return nil, err
 	}
 	if user.Id != 0 {
 		tx.Rollback()
-		return 0, errors.New("Found a user with the same username")
+		return nil, errors.New("Found a user with the same username")
 	}
 
 	// generate ID
 	snowflakeId, err := d.snowflake.NextID()
 	if err != nil {
 		tx.Rollback()
-		return 0, errors.New("snowflake generate ID fail")
+		return nil, errors.New("snowflake generate ID fail")
 	}
-	id = int64(snowflakeId)
+	id := int64(snowflakeId)
 
 	// Insert user
-	err = tx.Create(&User{
+	insertUser = &User{
 		Id:       id,
 		Username: username,
 		Password: password,
 		Name:     name,
-	}).Error
+	}
+	err = tx.Create(insertUser).Error
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return nil, err
 	}
 
-	return id, tx.Commit().Error
+	return insertUser, tx.Commit().Error
 }
