@@ -16,14 +16,13 @@ type RegisterInfo struct {
 	Token string
 }
 
-func Register(username string, password string) (*RegisterInfo, error) {
-	flow := NewRegisterInfoFlow(username, password)
-	flowProcessor := FlowProcessor{flow}
-	err := flowProcessor.Do()
-	if err != nil {
-		return nil, err
-	}
-	return flow.registerInfo, nil
+type RegisterInfoFlow struct {
+	username string
+	password string
+
+	registerInfo *RegisterInfo
+
+	userId int64
 }
 
 func NewRegisterInfoFlow(username string, password string) *RegisterInfoFlow {
@@ -33,13 +32,14 @@ func NewRegisterInfoFlow(username string, password string) *RegisterInfoFlow {
 	}
 }
 
-type RegisterInfoFlow struct {
-	username string
-	password string
-
-	registerInfo *RegisterInfo
-
-	userId int64
+func Register(username string, password string) (*RegisterInfo, error) {
+	flow := NewRegisterInfoFlow(username, password)
+	flowProcessor := FlowProcessor{flow}
+	err := flowProcessor.Do()
+	if err != nil {
+		return nil, err
+	}
+	return flow.registerInfo, nil
 }
 
 // checkParam
