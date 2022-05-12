@@ -15,3 +15,10 @@ mysql:
   host: 120.25.0.102
   port: 3306
   db_name: douyin_12306
+
+redis:
+  addr: 120.25.0.102:6379
+  username:
+  password: root
+  db: 0
+

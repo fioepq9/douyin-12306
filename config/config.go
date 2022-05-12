@@ -19,6 +19,7 @@ type config struct {
 	Log   logConf   `mapstructure:"log"`
 	Gin   ginConf   `mapstructure:"gin"`
 	Mysql mysqlConf `mapstructure:"mysql"`
+	Redis redisConf `mapstructure:"redis"`
 }
 
 func init() {
@@ -29,6 +30,7 @@ func init() {
 	viper.SetDefault("log", logConf{}.defaultConf())
 	viper.SetDefault("gin", ginConf{}.defaultConf())
 	viper.SetDefault("mysql", mysqlConf{}.defaultConf())
+	viper.SetDefault("redis", redisConf{}.defaultConf())
 
 	// config file setting
 	viper.AddConfigPath(configRelPath)
