@@ -38,7 +38,8 @@ func NewUserDAOInstance() *UserDAO {
 	return userDAO
 }
 
-func (d *UserDAO) Register(username string, password string, name string) (user *User, err error) {
+func (d *UserDAO) Register(username string, password string, name string) (*User, error) {
+	var user User
 	tx := R.MySQL.Table(User{}.TableName()).Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -47,7 +48,7 @@ func (d *UserDAO) Register(username string, password string, name string) (user 
 	}()
 
 	// Check：该username是否已存在
-	err = tx.Where(&User{Username: username}).Take(user).Error
+	err := tx.Where(&User{Username: username}).Take(&user).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err == nil {
 			err = errors.New("用户名已存在")
@@ -65,7 +66,7 @@ func (d *UserDAO) Register(username string, password string, name string) (user 
 	id := int64(sonyId)
 
 	// Insert user
-	user = &User{
+	user = User{
 		Id:       id,
 		Username: username,
 		Password: password,
@@ -77,5 +78,5 @@ func (d *UserDAO) Register(username string, password string, name string) (user 
 		return nil, err
 	}
 
-	return user, tx.Commit().Error
+	return &user, tx.Commit().Error
 }
