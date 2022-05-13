@@ -46,7 +46,7 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 		})
 	}
 
-	tx := R.MySQL.Table(models.User{}.TableName()).Begin()
+	tx := R.MySQL.WithContext(ctx).Table(models.User{}.TableName()).Begin()
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
