@@ -30,7 +30,7 @@ func Register(c *gin.Context) {
 		"password": req.Password,
 	})
 
-	info, err := service.Register(c, req.Username, req.Password)
+	info, err := service.NewUserServiceInstance().Register(c, req.Username, req.Password)
 	if err != nil {
 		c.JSON(http.StatusOK, responses.UserRegisterResponse{
 			Response: responses.Response{
