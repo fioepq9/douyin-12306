@@ -21,11 +21,11 @@ func init() {
 	// 初始化 MySQL
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.C.Mysql.User,
-		config.C.Mysql.Passwd,
-		config.C.Mysql.Host,
-		config.C.Mysql.Port,
-		config.C.Mysql.DBName,
+		config.C.MySQL.User,
+		config.C.MySQL.Passwd,
+		config.C.MySQL.Host,
+		config.C.MySQL.Port,
+		config.C.MySQL.DBName,
 	)
 	R.MySQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		PrepareStmt: true,
@@ -33,11 +33,11 @@ func init() {
 	if err != nil {
 		logger.L.Panic("Init MySQL fail", map[string]interface{}{
 			"error":        err,
-			"MySQL config": config.C.Mysql,
+			"MySQL config": config.C.MySQL,
 		})
 	}
 	logger.L.Info("Init MySQL success", map[string]interface{}{
-		"MySQL config": config.C.Mysql,
+		"MySQL config": config.C.MySQL,
 	})
 	// 初始化 Redis
 	redisURL := fmt.Sprintf("redis://%s:%s@%s/%s",

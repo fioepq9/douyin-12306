@@ -4,7 +4,6 @@ import (
 	"context"
 	"douyin-12306/logger"
 	"douyin-12306/models"
-	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 	"github.com/sony/sonyflake"
@@ -33,8 +32,7 @@ func NewUserDAOInstance() *UserDAO {
 func (d *UserDAO) Register(ctx context.Context, username string, password string, name string) (*models.User, error) {
 	var user models.User
 
-	key := fmt.Sprintf("%s:%s", models.User{}.UsernameKeyPrefix(), username)
-	err := R.Redis.Get(ctx, key).Scan(&user)
+	err := R.Redis.Get(ctx, models.User{}.UsernameKeyPrefix()+username).Err()
 	if !errors.Is(err, redis.Nil) {
 		if err == nil {
 			logger.L.Debug("repository.Register found user in Redis", nil)
@@ -59,6 +57,18 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 	err = tx.Where(&models.User{Username: username}).Take(&user).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		if err == nil {
+			err = R.Redis.Set(ctx, user.Key(), &user, user.Expiration()).Err()
+			if err != nil {
+				logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
+					"error": err,
+				})
+			}
+			err = R.Redis.Set(ctx, user.UsernameKey(), user.Id, user.Expiration()).Err()
+			if err != nil {
+				logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
+					"error": err,
+				})
+			}
 			logger.L.Debug("repository.Register found user in MySQL", nil)
 			err = errors.New("用户名已存在")
 		}
@@ -93,12 +103,17 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 		return nil, err
 	}
 
-	err = R.Redis.Set(ctx, key, &user, user.Expiration()).Err()
+	err = R.Redis.Set(ctx, user.Key(), &user, user.Expiration()).Err()
 	if err != nil {
 		logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
 			"error": err,
 		})
 	}
-
+	err = R.Redis.Set(ctx, user.UsernameKey(), user.Id, user.Expiration()).Err()
+	if err != nil {
+		logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
+			"error": err,
+		})
+	}
 	return &user, nil
 }

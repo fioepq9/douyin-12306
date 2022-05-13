@@ -1,7 +1,8 @@
 package models
 
 import (
-	"fmt"
+	"bytes"
+	"douyin-12306/pkg/util"
 	jsoniter "github.com/json-iterator/go"
 	"time"
 )
@@ -26,19 +27,23 @@ func (User) Expiration() time.Duration {
 }
 
 func (User) KeyPrefix() string {
-	return "user"
+	return "user:"
 }
 
 func (User) UsernameKeyPrefix() string {
-	return "username"
+	return "username:"
 }
 
 func (u *User) Key() string {
-	return fmt.Sprintf("%s:%d", u.KeyPrefix(), u.Id)
+	buf := bytes.NewBufferString(u.KeyPrefix())
+	buf.WriteString(util.Int64ToString(u.Id))
+	return buf.String()
 }
 
 func (u *User) UsernameKey() string {
-	return fmt.Sprintf("%s:%s", u.UsernameKeyPrefix(), u.Username)
+	buf := bytes.NewBufferString(u.UsernameKeyPrefix())
+	buf.WriteString(u.Username)
+	return buf.String()
 }
 
 func (u *User) MarshalBinary() (data []byte, err error) {

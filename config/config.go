@@ -18,7 +18,7 @@ type config struct {
 	Main  mainConf  `mapstructure:"main"`
 	Log   logConf   `mapstructure:"log"`
 	Gin   ginConf   `mapstructure:"gin"`
-	Mysql mysqlConf `mapstructure:"mysql"`
+	MySQL mysqlConf `mapstructure:"mysql"`
 	Redis redisConf `mapstructure:"redis"`
 }
 
