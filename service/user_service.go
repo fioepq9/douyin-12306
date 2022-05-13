@@ -25,7 +25,7 @@ func NewUserServiceInstance() *UserService {
 	userOnce.Do(func() {
 		userService = &UserService{
 			newToken: func() string {
-				return tokenPrefix + uuid.NewV4().String()
+				return uuid.NewV4().String()
 			},
 		}
 	})
@@ -55,7 +55,7 @@ func (s *UserService) Register(ctx context.Context, username, password string) (
 		Token: s.newToken(),
 	}
 
-	err = repository.R.Redis.Set(ctx, info.Token, user, user.Expiration()).Err()
+	err = repository.R.Redis.Set(ctx, tokenPrefix+info.Token, user, user.Expiration()).Err()
 	if err != nil {
 		return nil, err
 	}
