@@ -99,7 +99,6 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 
 	err = tx.Commit().Error
 	if err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 
