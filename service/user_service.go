@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"douyin-12306/dto"
+	"douyin-12306/pkg/util"
 	"douyin-12306/repository"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"github.com/satori/go.uuid"
@@ -109,4 +111,31 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 		Id:    user.Id,
 		Token: token,
 	}, nil
+}
+
+type UserInfo struct {
+	dto.UserDTO
+	IsFollow bool `json:"is_follow"`
+}
+
+func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*UserInfo, error) {
+	// 1.查询selectId对应用户信息
+	user := repository.NewUserDAOInstance().GetUserByUserId(selectId)
+	if user == nil {
+		return nil, errors.New("用户不存在")
+	}
+	// 用户存在时将User转为UserDTO
+	var userDTO = &dto.UserDTO{}
+	err := copier.Copy(userDTO, user)
+	if err != nil {
+		return nil, errors.New("User到UserDTO转化失败")
+	}
+
+	// 2.查询isFollow信息
+	userId := util.GetUser(c).Id
+	isFollow := repository.NewUserDAOInstance().IsUserFollow(userId, selectId)
+
+	// 3.组装到结果返回
+	var userInfo = &UserInfo{*userDTO, isFollow}
+	return userInfo, nil
 }
