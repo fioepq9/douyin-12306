@@ -63,7 +63,7 @@ func Login(c *gin.Context) {
 	}
 
 	// 正确返回
-	c.JSON(http.StatusOK, responses.UserRegisterResponse{
+	c.JSON(http.StatusOK, responses.UserLoginResponse{
 		Response: responses.SuccessResponse("login success"),
 		UserId:   info.Id,
 		Token:    info.Token,
@@ -91,6 +91,7 @@ func UserInfo(c *gin.Context) {
 
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserInfoResponse{
+		Response: responses.SuccessResponse("query user info success"),
 		User: responses.User{
 			Id:            info.Id,
 			Name:          info.Name,
@@ -98,6 +99,5 @@ func UserInfo(c *gin.Context) {
 			FollowerCount: info.FollowerCount,
 			IsFollow:      info.IsFollow,
 		},
-		Response: responses.SuccessResponse("query user info success"),
 	})
 }
