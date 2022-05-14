@@ -9,25 +9,6 @@ import (
 	"net/http"
 )
 
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
-
-func errorResponse(c *gin.Context, err error) {
-	c.JSON(http.StatusOK, responses.UserRegisterResponse{
-		Response: responses.Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		},
-	})
-}
-
 // Register 注册接口
 func Register(c *gin.Context) {
 	var (
@@ -37,7 +18,7 @@ func Register(c *gin.Context) {
 
 	err = c.BindQuery(&req)
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
 	}
 	logger.L.Debugw("Register 接口的 Request", map[string]interface{}{
@@ -47,7 +28,7 @@ func Register(c *gin.Context) {
 
 	info, err := service.NewUserServiceInstance().Register(c, req.Username, req.Password)
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
 	}
 	logger.L.Debugw("Register 接口的 Response", map[string]interface{}{
@@ -56,12 +37,9 @@ func Register(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, responses.UserRegisterResponse{
-		Response: responses.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
-		UserId: info.Id,
-		Token:  info.Token,
+		Response: responses.SuccessResponse("register success"),
+		UserId:   info.Id,
+		Token:    info.Token,
 	})
 }
 
@@ -73,25 +51,22 @@ func Login(c *gin.Context) {
 	)
 	err = c.BindQuery(&req)
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
 	}
 
 	info, err := service.NewUserServiceInstance().Login(c, req.Username, req.Password)
 	// 错误信息
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
 	}
 
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserRegisterResponse{
-		Response: responses.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
-		UserId: info.Id,
-		Token:  info.Token,
+		Response: responses.SuccessResponse("login success"),
+		UserId:   info.Id,
+		Token:    info.Token,
 	})
 }
 
@@ -104,20 +79,19 @@ func UserInfo(c *gin.Context) {
 	// 绑定参数
 	err = c.BindQuery(&req)
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
+		return
 	}
 
 	userInfo, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
 	if err != nil {
-		errorResponse(c, err)
+		c.JSON(http.StatusOK, responses.ErrorResponse(err))
+		return
 	}
 
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserInfoResponse{
-		Response: responses.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
+		Response: responses.SuccessResponse("query user info success"),
 		UserInfo: *userInfo,
 	})
 }
