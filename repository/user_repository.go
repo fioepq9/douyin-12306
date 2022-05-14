@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin-12306/logger"
 	"douyin-12306/models"
+	"douyin-12306/responses"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 	"github.com/sony/sonyflake"
@@ -127,25 +128,22 @@ func (d *UserDAO) GetUserByUsername(ctx context.Context, username string) (*mode
 	return &user, nil
 }
 
-// GetUserByUserId 根据用户id查询用户
-func (d *UserDAO) GetUserByUserId(ctx context.Context, id int64) *models.User {
-	var user = models.User{}
-	err := R.MySQL.WithContext(ctx).First(&user, id).Error
-	// 若此id对应的用户不存在
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil
+// GetUserRespByUserId 根据用户id查询用户信息（包含IsFollow信息）
+func (d *UserDAO) GetUserRespByUserId(ctx context.Context, selectUserId int64, curUserId int64) (*responses.User, error) {
+	var userResp responses.User
+	db := R.MySQL
+	err := db.WithContext(ctx).Table(models.User{}.TableName()).Select("*, IF(EXISTS(?), TRUE, FALSE) as is_follow",
+		db.Table(models.UserFollow{}.TableName()).Where(models.UserFollow{
+			UserId:     selectUserId,
+			FollowerId: curUserId,
+		})).Where(models.User{
+		Id: selectUserId,
+	}).Take(&userResp).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("用户不存在")
+		}
+		return nil, err
 	}
-	return &user
-}
-
-func (d *UserDAO) IsUserFollow(ctx context.Context, fromUser int64, toUser int64) bool {
-	var userFollow models.UserFollow
-	err := R.MySQL.WithContext(ctx).Where("user_id", toUser).Where("follower_id", fromUser).First(&userFollow).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		// 关注不存在
-		return false
-	} else {
-		// 关注存在
-		return true
-	}
+	return &userResp, nil
 }

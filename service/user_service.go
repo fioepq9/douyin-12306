@@ -108,29 +108,12 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 }
 
 func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*responses.User, error) {
-	// 1.查询selectId对应用户信息
-	user := repository.NewUserDAOInstance().GetUserByUserId(c, selectId)
-	if user == nil {
-		return nil, errors.New("用户不存在")
-	}
-	// 用户存在时将User转为UserDTO
-	var userDTO = &dto.UserDTO{}
-	err := copier.Copy(userDTO, user)
+	// 1.获取登陆用户id
+	curUserId := util.GetUser(c).Id
+	// 2.获取userResp
+	userResp, err := repository.NewUserDAOInstance().GetUserRespByUserId(c, selectId, curUserId)
 	if err != nil {
-		return nil, errors.New("User到UserDTO转化失败")
+		return nil, err
 	}
-
-	// 2.查询isFollow信息
-	userId := util.GetUser(c).Id
-	isFollow := repository.NewUserDAOInstance().IsUserFollow(c, userId, selectId)
-
-	// 3.组装到结果返回
-	var userResponse = responses.User{}
-	err = copier.Copy(userResponse, userDTO)
-	if err != nil {
-		return nil, errors.New("UserDTO到responses.User转化失败")
-	}
-	userResponse.IsFollow = isFollow
-
-	return &userResponse, nil
+	return userResp, nil
 }
