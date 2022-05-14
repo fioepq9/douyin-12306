@@ -2,6 +2,7 @@ package router
 
 import (
 	"douyin-12306/controller"
+	"douyin-12306/midware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,9 @@ func Register(r *gin.Engine) {
 	apiRouter.GET("/user/", controller.UserInfo)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
+
+	// 登录验证中间件
+	apiRouter.Use(midware.Authorization())
 	apiRouter.POST("/publish/action/", controller.Publish)
 	apiRouter.GET("/publish/list/", controller.PublishList)
 
