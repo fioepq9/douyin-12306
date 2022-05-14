@@ -28,6 +28,6 @@ type User struct {
 }
 
 type LoginInfo struct {
-	Id    int64
-	Token string
+	Id    int64  `json:"user_id"`
+	Token string `json:"token"`
 }
