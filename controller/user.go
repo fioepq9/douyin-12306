@@ -9,6 +9,16 @@ import (
 	"net/http"
 )
 
+var usersLoginInfo = map[string]User{
+	"zhangleidouyin": {
+		Id:            1,
+		Name:          "zhanglei",
+		FollowCount:   10,
+		FollowerCount: 5,
+		IsFollow:      true,
+	},
+}
+
 func errorResponse(c *gin.Context, err error) {
 	c.JSON(http.StatusOK, responses.UserRegisterResponse{
 		Response: responses.Response{
