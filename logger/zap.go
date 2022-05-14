@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"douyin-12306/config"
 	"fmt"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -46,7 +45,7 @@ func newWriteSyncer(out string) (writeSyncer zapcore.WriteSyncer, err error) {
 	if out == "stdout" {
 		writeSyncer = zapcore.AddSync(os.Stdout)
 	} else {
-		output, err := os.OpenFile(config.C.Log.Out, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		output, err := os.OpenFile(out, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return nil, err
 		}
