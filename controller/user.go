@@ -25,7 +25,7 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	logger.L.Debug("Register 接口的 Request", map[string]interface{}{
+	logger.L.Debugw("Register 接口的 Request", map[string]interface{}{
 		"username": req.Username,
 		"password": req.Password,
 	})
@@ -40,7 +40,7 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	logger.L.Debug("Register 接口的 Response", map[string]interface{}{
+	logger.L.Debugw("Register 接口的 Response", map[string]interface{}{
 		"user_id": info.Id,
 		"token":   info.Token,
 	})

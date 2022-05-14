@@ -29,21 +29,23 @@ func NewUserDAOInstance() *UserDAO {
 	return userDAO
 }
 
+// Register
+/*	@param
+ *
+**/
 func (d *UserDAO) Register(ctx context.Context, username string, password string, name string) (*models.User, error) {
 	var user models.User
 
 	err := R.Redis.Get(ctx, models.User{}.UsernameKeyPrefix()+username).Err()
 	if !errors.Is(err, redis.Nil) {
 		if err == nil {
-			logger.L.Debug("repository.Register found user in Redis", nil)
+			logger.L.Debug("Found User In Redis")
 			err = errors.New("用户名已存在")
 			return nil, err
 		}
 		// 用日志打印替代返回 error
 		//	Redis不可用时的降级策略
-		logger.L.Error("Redis Get Error In repository.Register", map[string]interface{}{
-			"error": err,
-		})
+		logger.L.Errorf("Redis Get Error: %s", err.Error())
 	}
 
 	tx := R.MySQL.WithContext(ctx).Table(models.User{}.TableName()).Begin()
@@ -59,17 +61,13 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 		if err == nil {
 			err = R.Redis.Set(ctx, user.Key(), &user, user.Expiration()).Err()
 			if err != nil {
-				logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
-					"error": err,
-				})
+				logger.L.Errorf("Redis Set Error: %s", err.Error())
 			}
 			err = R.Redis.Set(ctx, user.UsernameKey(), user.Id, user.Expiration()).Err()
 			if err != nil {
-				logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
-					"error": err,
-				})
+				logger.L.Errorf("Redis Set Error: %s", err.Error())
 			}
-			logger.L.Debug("repository.Register found user in MySQL", nil)
+			logger.L.Debug("Found User In MySQL")
 			err = errors.New("用户名已存在")
 		}
 		tx.Rollback()
@@ -104,15 +102,11 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 
 	err = R.Redis.Set(ctx, user.Key(), &user, user.Expiration()).Err()
 	if err != nil {
-		logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
-			"error": err,
-		})
+		logger.L.Errorf("Redis Set Error: %s", err.Error())
 	}
 	err = R.Redis.Set(ctx, user.UsernameKey(), user.Id, user.Expiration()).Err()
 	if err != nil {
-		logger.L.Error("Redis Set Error In userDAO.Register", map[string]interface{}{
-			"error": err,
-		})
+		logger.L.Errorf("Redis Set Error: %s", err.Error())
 	}
 	return &user, nil
 }

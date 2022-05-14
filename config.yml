@@ -3,11 +3,11 @@ main:
   port: 9090
 
 log:
-  level: debug        # panic, fatal, error, warn, info, debug, trace
-  out: stdout         # stdout or [filepath]
+  level: debug  # panic, fatal, error, warn, info, debug, trace
+  out: stdout   # stdout, [filepath]
 
 gin:
-  mode: debug         # debug, release, test
+  mode: debug   # debug, release, test
 
 mysql:
   user: root
@@ -15,6 +15,12 @@ mysql:
   host: 120.25.0.102
   port: 3306
   db_name: douyin_12306
+  log:
+    level: info                           # info, warn, error, silent
+    out: stdout                           # stdout, [filepath]
+    slow_threshold: 500                   # 单位: ms
+    ignore_record_not_found_error: false  # true, false
+
 
 redis:
   addr: 120.25.0.102:6379

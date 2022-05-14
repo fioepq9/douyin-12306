@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	logger.L.Info("init service success", map[string]interface{}{
+	logger.L.Infow("init service success", map[string]interface{}{
 		"package":  "service",
 		"function": "init",
 	})

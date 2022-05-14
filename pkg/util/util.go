@@ -22,6 +22,7 @@ func Int64ToString(num int64) string {
 		numBuf[i] = byte('0' + num - next*10)
 		num = next
 	}
+	buf.Grow(19 - i)
 	for ; i < 19; i++ {
 		buf.WriteByte(numBuf[i])
 	}
