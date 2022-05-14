@@ -82,22 +82,42 @@ type UserResponse struct {
 }
 
 func Login(c *gin.Context) {
-	username := c.Query("username")
-	password := c.Query("password")
-
-	token := username + password
-
-	if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0},
-			UserId:   user.Id,
-			Token:    token,
+	var (
+		req requests.UserLoginRequest
+		err error
+	)
+	err = c.BindQuery(&req)
+	if err != nil {
+		c.JSON(http.StatusOK, responses.UserRegisterResponse{
+			Response: responses.Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			},
 		})
-	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
+		return
 	}
+
+	info, err := service.NewUserServiceInstance().Login(c, req.Username, req.Password)
+	// 错误信息
+	if err != nil {
+		c.JSON(http.StatusOK, responses.UserRegisterResponse{
+			Response: responses.Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			},
+		})
+		return
+	}
+
+	// 正确返回
+	c.JSON(http.StatusOK, responses.UserRegisterResponse{
+		Response: responses.Response{
+			StatusCode: 0,
+			StatusMsg:  "success",
+		},
+		UserId: info.Id,
+		Token:  info.Token,
+	})
 }
 
 func UserInfo(c *gin.Context) {

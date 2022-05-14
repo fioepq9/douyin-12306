@@ -116,3 +116,15 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 	}
 	return &user, nil
 }
+
+// GetUserByUsername 根据用户名查询用户
+func (d *UserDAO) GetUserByUsername(username string) *models.User {
+	// 使用用户名查询用户
+	user := models.User{}
+	err := R.MySQL.Where("username=?", username).First(&user).Error
+	// 若此用户名的用户不存在
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	return &user
+}
