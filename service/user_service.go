@@ -12,7 +12,7 @@ import (
 
 const (
 	nameMaxLength = 20
-	tokenPrefix   = "token:"
+	TokenPrefix   = "token:"
 )
 
 type UserService struct {
@@ -65,7 +65,7 @@ func (s *UserService) Register(ctx context.Context, username, password string) (
 		return nil, err
 	}
 	// 存储userDTO
-	err = repository.R.Redis.Set(ctx, tokenPrefix+info.Token, userDTO, user.Expiration()).Err()
+	err = repository.R.Redis.Set(ctx, TokenPrefix+info.Token, userDTO, user.Expiration()).Err()
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 
 	// 3.2 存到redis
 	token := s.newToken()
-	err = repository.R.Redis.Set(ctx, tokenPrefix+token, userDTO, user.Expiration()).Err()
+	err = repository.R.Redis.Set(ctx, TokenPrefix+token, userDTO, user.Expiration()).Err()
 	if err != nil {
 		return nil, err
 	}
