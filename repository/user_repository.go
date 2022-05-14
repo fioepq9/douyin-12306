@@ -122,3 +122,26 @@ func (d *UserDAO) GetUserByUsername(username string) *models.User {
 	}
 	return &user
 }
+
+// GetUserByUserId 根据用户id查询用户
+func (d *UserDAO) GetUserByUserId(id int64) *models.User {
+	var user = models.User{}
+	err := R.MySQL.First(&user, id).Error
+	// 若此id对应的用户不存在
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	return &user
+}
+
+func (d *UserDAO) IsUserFollow(fromUser int64, toUser int64) bool {
+	var userFollow models.UserFollow
+	err := R.MySQL.Where("user_id", toUser).Where("follower_id", fromUser).First(&userFollow).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// 关注不存在
+		return false
+	} else {
+		// 关注存在
+		return true
+	}
+}

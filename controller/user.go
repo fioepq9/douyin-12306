@@ -73,6 +73,15 @@ type UserResponse struct {
 	User User `json:"user"`
 }
 
+func errorResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusOK, responses.UserRegisterResponse{
+		Response: responses.Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		},
+	})
+}
+
 func Login(c *gin.Context) {
 	var (
 		req requests.UserLoginRequest
@@ -80,24 +89,14 @@ func Login(c *gin.Context) {
 	)
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, responses.UserRegisterResponse{
-			Response: responses.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error(),
-			},
-		})
+		errorResponse(c, err)
 		return
 	}
 
 	info, err := service.NewUserServiceInstance().Login(c, req.Username, req.Password)
 	// 错误信息
 	if err != nil {
-		c.JSON(http.StatusOK, responses.UserRegisterResponse{
-			Response: responses.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error(),
-			},
-		})
+		errorResponse(c, err)
 		return
 	}
 
@@ -113,16 +112,27 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	token := c.Query("token")
-
-	if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0},
-			User:     user,
-		})
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
+	var (
+		req requests.UserInfoRequest
+		err error
+	)
+	// 绑定参数
+	err = c.BindQuery(&req)
+	if err != nil {
+		errorResponse(c, err)
 	}
+
+	userInfo, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
+	if err != nil {
+		errorResponse(c, err)
+	}
+
+	// 正确返回
+	c.JSON(http.StatusOK, responses.UserInfoResponse{
+		Response: responses.Response{
+			StatusCode: 0,
+			StatusMsg:  "success",
+		},
+		UserInfo: *userInfo,
+	})
 }
