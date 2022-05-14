@@ -1,5 +1,15 @@
 package controller
 
+var usersLoginInfo = map[string]User{
+	"zhangleidouyin": {
+		Id:            1,
+		Name:          "zhanglei",
+		FollowCount:   10,
+		FollowerCount: 5,
+		IsFollow:      true,
+	},
+}
+
 var DemoVideos = []Video{
 	{
 		Id:            1,
