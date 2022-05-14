@@ -9,6 +9,16 @@ import (
 	"net/http"
 )
 
+func errorResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusOK, responses.UserRegisterResponse{
+		Response: responses.Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		},
+	})
+}
+
+// Register 注册接口
 func Register(c *gin.Context) {
 	var (
 		req requests.UserRegisterRequest
@@ -17,12 +27,7 @@ func Register(c *gin.Context) {
 
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, responses.UserRegisterResponse{
-			Response: responses.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error(),
-			},
-		})
+		errorResponse(c, err)
 		return
 	}
 	logger.L.Debugw("Register 接口的 Request", map[string]interface{}{
@@ -32,12 +37,7 @@ func Register(c *gin.Context) {
 
 	info, err := service.NewUserServiceInstance().Register(c, req.Username, req.Password)
 	if err != nil {
-		c.JSON(http.StatusOK, responses.UserRegisterResponse{
-			Response: responses.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error(),
-			},
-		})
+		errorResponse(c, err)
 		return
 	}
 	logger.L.Debugw("Register 接口的 Response", map[string]interface{}{
@@ -55,33 +55,7 @@ func Register(c *gin.Context) {
 	})
 }
 
-// usersLoginInfo use map to store user info, and key is username+password for demo
-// user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
-	},
-}
-
-type UserResponse struct {
-	Response
-	User User `json:"user"`
-}
-
-func errorResponse(c *gin.Context, err error) {
-	c.JSON(http.StatusOK, responses.UserRegisterResponse{
-		Response: responses.Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		},
-	})
-}
-
+// Login 登录接口
 func Login(c *gin.Context) {
 	var (
 		req requests.UserLoginRequest
@@ -111,6 +85,7 @@ func Login(c *gin.Context) {
 	})
 }
 
+// UserInfo 用户信息接口
 func UserInfo(c *gin.Context) {
 	var (
 		req requests.UserInfoRequest
