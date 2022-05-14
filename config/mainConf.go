@@ -5,8 +5,8 @@ type mainConf struct {
 	Port string `mapstructure:"port"`
 }
 
-func (mainConf) defaultConf() map[string]string {
-	return map[string]string{
+func (mainConf) defaultConf() map[string]interface{} {
+	return map[string]interface{}{
 		"host": "0.0.0.0",
 		"port": "9090",
 	}

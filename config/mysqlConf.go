@@ -22,7 +22,7 @@ func (mysqlConf) defaultConf() map[string]interface{} {
 type mysqlLogConf struct {
 	Level                     string `mapstructure:"level"`
 	Out                       string `mapstructure:"out"`
-	SlowThreshold             int    `mapstructure:"slow_threshold"`
+	SlowThreshold             int64  `mapstructure:"slow_threshold"`
 	IgnoreRecordNotFoundError bool   `mapstructure:"ignore_record_not_found_error"`
 }
 

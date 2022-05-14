@@ -1,4 +1,4 @@
-package midware
+package middleware
 
 import (
 	"douyin-12306/dto"
@@ -13,10 +13,9 @@ import (
 
 // 拒绝访问后面的接口
 func notAllow(c *gin.Context) {
-	c.JSON(http.StatusBadRequest, gin.H{
+	c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 		"msg": "没有用户权限",
 	})
-	c.Abort()
 }
 
 func Authorization() gin.HandlerFunc {

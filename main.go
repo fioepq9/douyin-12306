@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 
-	_ "douyin-12306/logger"
-
 	_ "douyin-12306/repository"
 )
 
@@ -19,10 +17,9 @@ func main() {
 			panic(err)
 		}
 	}()
-	r := gin.Default()
-
 	gin.SetMode(config.C.Gin.Mode)
 
+	r := gin.Default()
 	router.Register(r)
 
 	err := r.Run(fmt.Sprintf("%s:%s",
