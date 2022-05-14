@@ -58,7 +58,14 @@ func (s *UserService) Register(ctx context.Context, username, password string) (
 		Token: s.newToken(),
 	}
 
-	err = repository.R.Redis.Set(ctx, tokenPrefix+info.Token, user, user.Expiration()).Err()
+	// User转UserSimpleDTO
+	userDTO := &dto.UserSimpleDTO{}
+	err = copier.Copy(userDTO, user)
+	if err != nil {
+		return nil, err
+	}
+	// 存储userDTO
+	err = repository.R.Redis.Set(ctx, tokenPrefix+info.Token, userDTO, user.Expiration()).Err()
 	if err != nil {
 		return nil, err
 	}

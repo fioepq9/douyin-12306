@@ -68,14 +68,6 @@ var usersLoginInfo = map[string]User{
 	},
 }
 
-var userIdSequence = int64(1)
-
-type UserLoginResponse struct {
-	Response
-	UserId int64  `json:"user_id"`
-	Token  string `json:"token"`
-}
-
 type UserResponse struct {
 	Response
 	User User `json:"user"`
