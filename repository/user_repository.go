@@ -112,10 +112,10 @@ func (d *UserDAO) Register(ctx context.Context, username string, password string
 }
 
 // GetUserByUsername 根据用户名查询用户
-func (d *UserDAO) GetUserByUsername(username string) *models.User {
+func (d *UserDAO) GetUserByUsername(ctx context.Context, username string) *models.User {
 	// 使用用户名查询用户
 	user := models.User{}
-	err := R.MySQL.Where("username=?", username).First(&user).Error
+	err := R.MySQL.WithContext(ctx).Where("username=?", username).First(&user).Error
 	// 若此用户名的用户不存在
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
@@ -124,9 +124,9 @@ func (d *UserDAO) GetUserByUsername(username string) *models.User {
 }
 
 // GetUserByUserId 根据用户id查询用户
-func (d *UserDAO) GetUserByUserId(id int64) *models.User {
+func (d *UserDAO) GetUserByUserId(ctx context.Context, id int64) *models.User {
 	var user = models.User{}
-	err := R.MySQL.First(&user, id).Error
+	err := R.MySQL.WithContext(ctx).First(&user, id).Error
 	// 若此id对应的用户不存在
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
@@ -134,9 +134,9 @@ func (d *UserDAO) GetUserByUserId(id int64) *models.User {
 	return &user
 }
 
-func (d *UserDAO) IsUserFollow(fromUser int64, toUser int64) bool {
+func (d *UserDAO) IsUserFollow(ctx context.Context, fromUser int64, toUser int64) bool {
 	var userFollow models.UserFollow
-	err := R.MySQL.Where("user_id", toUser).Where("follower_id", fromUser).First(&userFollow).Error
+	err := R.MySQL.WithContext(ctx).Where("user_id", toUser).Where("follower_id", fromUser).First(&userFollow).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// 关注不存在
 		return false

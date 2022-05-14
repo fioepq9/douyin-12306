@@ -8,6 +8,7 @@ log:
 
 gin:
   mode: debug   # debug, release, test
+  timeout: 5    # 单位: s
 
 mysql:
   user: root

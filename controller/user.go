@@ -83,7 +83,7 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 
-	userInfo, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
+	info, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
 	if err != nil {
 		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
@@ -91,7 +91,13 @@ func UserInfo(c *gin.Context) {
 
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserInfoResponse{
+		User: responses.User{
+			Id:            info.Id,
+			Name:          info.Name,
+			FollowCount:   info.FollowCount,
+			FollowerCount: info.FollowerCount,
+			IsFollow:      info.IsFollow,
+		},
 		Response: responses.SuccessResponse("query user info success"),
-		UserInfo: *userInfo,
 	})
 }

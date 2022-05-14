@@ -1,9 +1,11 @@
 package router
 
 import (
+	"douyin-12306/config"
 	"douyin-12306/controller"
-	"douyin-12306/midware"
+	"douyin-12306/middleware"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func Register(r *gin.Engine) {
@@ -12,13 +14,15 @@ func Register(r *gin.Engine) {
 
 	apiRouter := r.Group("/douyin")
 
+	// 超时中间件
+	apiRouter.Use(middleware.Timeout(time.Duration(config.C.Gin.Timeout) * time.Second))
 	// basic apis
 	apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
 
 	// 登录验证中间件
-	apiRouter.Use(midware.Authorization())
+	apiRouter.Use(middleware.Authorization())
 	apiRouter.GET("/user/", controller.UserInfo)
 	apiRouter.POST("/publish/action/", controller.Publish)
 	apiRouter.GET("/publish/list/", controller.PublishList)

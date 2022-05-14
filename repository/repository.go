@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"douyin-12306/config"
 	"douyin-12306/logger"
 	"fmt"
@@ -54,12 +55,17 @@ func init() {
 	)
 	opt, err := redis.ParseURL(redisURL)
 	if err != nil {
+	}
+	R.Redis = redis.NewClient(opt)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err = R.Redis.Ping(ctx).Err()
+	if err != nil {
 		logger.L.Panicw("Init Redis fail", map[string]interface{}{
 			"error":        err,
 			"Redis config": config.C.Redis,
 		})
 	}
-	R.Redis = redis.NewClient(opt)
 	logger.L.Infow("Init Redis success", map[string]interface{}{
 		"Redis config": config.C.Redis,
 	})
