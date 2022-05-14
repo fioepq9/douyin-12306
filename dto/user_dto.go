@@ -1,6 +1,10 @@
 package dto
 
-import "encoding/json"
+import (
+	jsoniter "github.com/json-iterator/go"
+)
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // UserSimpleDTO 相当于User去掉Password，FollowCount，FollowerCount，用于存储到redis中
 type UserSimpleDTO struct {

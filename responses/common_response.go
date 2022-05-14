@@ -26,3 +26,8 @@ type User struct {
 	FollowerCount int64  `json:"follower_count"`
 	IsFollow      bool   `json:"is_follow"`
 }
+
+type LoginInfo struct {
+	Id    int64
+	Token string
+}

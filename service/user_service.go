@@ -5,6 +5,7 @@ import (
 	"douyin-12306/dto"
 	"douyin-12306/pkg/util"
 	"douyin-12306/repository"
+	"douyin-12306/responses"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
@@ -37,12 +38,7 @@ func NewUserServiceInstance() *UserService {
 	return userService
 }
 
-type RegisterInfo struct {
-	Id    int64
-	Token string
-}
-
-func (s *UserService) Register(ctx context.Context, username, password string) (info *RegisterInfo, err error) {
+func (s *UserService) Register(ctx context.Context, username, password string) (info *responses.LoginInfo, err error) {
 	var defaultName string
 	if len(username) > nameMaxLength {
 		defaultName = username[:nameMaxLength]
@@ -55,7 +51,7 @@ func (s *UserService) Register(ctx context.Context, username, password string) (
 		return nil, err
 	}
 
-	info = &RegisterInfo{
+	info = &responses.LoginInfo{
 		Id:    user.Id,
 		Token: s.newToken(),
 	}
@@ -75,15 +71,13 @@ func (s *UserService) Register(ctx context.Context, username, password string) (
 	return info, nil
 }
 
-type LoginInfo struct {
-	Id    int64
-	Token string
-}
-
 // Login 登录
-func (s *UserService) Login(ctx context.Context, username string, password string) (info *LoginInfo, err error) {
+func (s *UserService) Login(ctx context.Context, username string, password string) (info *responses.LoginInfo, err error) {
 	// 1.查询用户是否存在
-	user := repository.NewUserDAOInstance().GetUserByUsername(ctx, username)
+	user, err := repository.NewUserDAOInstance().GetUserByUsername(ctx, username)
+	if err != nil {
+		return nil, err
+	}
 	if user == nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -107,18 +101,13 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	}
 
 	// 3.3 返回
-	return &LoginInfo{
+	return &responses.LoginInfo{
 		Id:    user.Id,
 		Token: token,
 	}, nil
 }
 
-type UserInfo struct {
-	dto.UserDTO
-	IsFollow bool `json:"is_follow"`
-}
-
-func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*UserInfo, error) {
+func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*responses.User, error) {
 	// 1.查询selectId对应用户信息
 	user := repository.NewUserDAOInstance().GetUserByUserId(c, selectId)
 	if user == nil {
@@ -136,6 +125,12 @@ func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*UserInfo, er
 	isFollow := repository.NewUserDAOInstance().IsUserFollow(c, userId, selectId)
 
 	// 3.组装到结果返回
-	var userInfo = &UserInfo{*userDTO, isFollow}
-	return userInfo, nil
+	var userResponse = responses.User{}
+	err = copier.Copy(userResponse, userDTO)
+	if err != nil {
+		return nil, errors.New("UserDTO到responses.User转化失败")
+	}
+	userResponse.IsFollow = isFollow
+
+	return &userResponse, nil
 }

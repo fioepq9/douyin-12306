@@ -37,9 +37,8 @@ func Register(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, responses.UserRegisterResponse{
-		Response: responses.SuccessResponse("register success"),
-		UserId:   info.Id,
-		Token:    info.Token,
+		Response:  responses.SuccessResponse("register success"),
+		LoginInfo: *info,
 	})
 }
 
@@ -64,9 +63,8 @@ func Login(c *gin.Context) {
 
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserLoginResponse{
-		Response: responses.SuccessResponse("login success"),
-		UserId:   info.Id,
-		Token:    info.Token,
+		Response:  responses.SuccessResponse("login success"),
+		LoginInfo: *info,
 	})
 }
 
@@ -83,7 +81,7 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 
-	info, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
+	user, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
 	if err != nil {
 		c.JSON(http.StatusOK, responses.ErrorResponse(err))
 		return
@@ -92,12 +90,6 @@ func UserInfo(c *gin.Context) {
 	// 正确返回
 	c.JSON(http.StatusOK, responses.UserInfoResponse{
 		Response: responses.SuccessResponse("query user info success"),
-		User: responses.User{
-			Id:            info.Id,
-			Name:          info.Name,
-			FollowCount:   info.FollowCount,
-			FollowerCount: info.FollowerCount,
-			IsFollow:      info.IsFollow,
-		},
+		User:     *user,
 	})
 }
