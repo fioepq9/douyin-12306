@@ -1,9 +1,5 @@
 package responses
 
-import (
-	"douyin-12306/service"
-)
-
 type UserRegisterResponse struct {
 	Response
 	UserId int64  `json:"user_id"`
@@ -18,5 +14,5 @@ type UserLoginResponse struct {
 
 type UserInfoResponse struct {
 	Response
-	UserInfo service.UserInfo `json:"user"`
+	User User `json:"user"`
 }

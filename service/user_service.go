@@ -83,7 +83,7 @@ type LoginInfo struct {
 // Login 登录
 func (s *UserService) Login(ctx context.Context, username string, password string) (info *LoginInfo, err error) {
 	// 1.查询用户是否存在
-	user := repository.NewUserDAOInstance().GetUserByUsername(username)
+	user := repository.NewUserDAOInstance().GetUserByUsername(ctx, username)
 	if user == nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -120,7 +120,7 @@ type UserInfo struct {
 
 func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*UserInfo, error) {
 	// 1.查询selectId对应用户信息
-	user := repository.NewUserDAOInstance().GetUserByUserId(selectId)
+	user := repository.NewUserDAOInstance().GetUserByUserId(c, selectId)
 	if user == nil {
 		return nil, errors.New("用户不存在")
 	}
@@ -133,7 +133,7 @@ func (s *UserService) GetUserInfo(c *gin.Context, selectId int64) (*UserInfo, er
 
 	// 2.查询isFollow信息
 	userId := util.GetUser(c).Id
-	isFollow := repository.NewUserDAOInstance().IsUserFollow(userId, selectId)
+	isFollow := repository.NewUserDAOInstance().IsUserFollow(c, userId, selectId)
 
 	// 3.组装到结果返回
 	var userInfo = &UserInfo{*userDTO, isFollow}

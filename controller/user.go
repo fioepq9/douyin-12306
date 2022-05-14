@@ -120,11 +120,13 @@ func UserInfo(c *gin.Context) {
 	err = c.BindQuery(&req)
 	if err != nil {
 		errorResponse(c, err)
+		return
 	}
 
-	userInfo, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
+	info, err := service.NewUserServiceInstance().GetUserInfo(c, req.UserId)
 	if err != nil {
 		errorResponse(c, err)
+		return
 	}
 
 	// 正确返回
@@ -133,6 +135,12 @@ func UserInfo(c *gin.Context) {
 			StatusCode: 0,
 			StatusMsg:  "success",
 		},
-		UserInfo: *userInfo,
+		User: responses.User{
+			Id:            info.Id,
+			Name:          info.Name,
+			FollowCount:   info.FollowCount,
+			FollowerCount: info.FollowerCount,
+			IsFollow:      info.IsFollow,
+		},
 	})
 }
