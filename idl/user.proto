@@ -1,0 +1,59 @@
+syntax = "proto3";
+package user;
+option go_package = "userKitex";
+
+
+message Response {
+    int32 status_code = 1; // 状态码，0-成功，其他值-失败
+    string status_msg = 2; // 返回状态描述
+}
+
+message LoginInfo {
+    int64 user_id = 2; // 用户id
+    string token = 3; // 用户鉴权token
+}
+
+message User {
+    int64 id = 1; // 用户id
+    string name = 2; // 用户昵称
+    int64 follow_count = 3; // 关注总数
+    int64 follower_count = 4; // 粉丝总数
+    bool is_follow = 5; // true-已关注，false-未关注
+}
+
+message UserRegisterRequest {
+    string username = 1; // 注册用户名，最长32个字符
+    string password = 2; // 密码，最长32个字符
+}
+
+
+message UserLoginRequest {
+    string username = 1; // 登录用户名
+    string password = 2; // 登录密码
+}
+
+message UserInfoRequest {
+    int64 user_id = 1; // 用户id
+    string token = 2; // 用户鉴权token
+}
+
+message UserRegisterResponse {
+    Response response = 1;
+    LoginInfo login_info = 2;
+}
+
+message UserLoginResponse {
+    Response response = 1;
+    LoginInfo login_info = 2;
+}
+
+message UserInfoResponse {
+    Response response = 1;
+    User user = 2; // 用户信息
+}
+
+service UserService {
+    rpc RegisterUser (UserRegisterRequest) returns (UserRegisterResponse);
+    rpc LoginUser (UserLoginRequest) returns (UserLoginResponse);
+    rpc QueryUserInfo (UserInfoRequest) returns (UserInfoResponse);
+}

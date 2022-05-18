@@ -2,23 +2,51 @@
 
 ## 项目结构
 
-> [项目结构 · gin实践系列 · 看云 (kancloud.cn)](https://static.kancloud.cn/lhj0702/sockstack_gin/1805357)
+```bash
+├─cmd
+│  ├─api			# api 服务，负责监听 http 请求并转发到其他服务
+│  │  ├─handlers	# 控制器目录
+│  │  ├─middleware		# 中间件
+│  │  ├─router			# 路由注册
+│  │  └─rpc				# 封装了调用其他 rpc 服务的逻辑
+│  └─user			# user 服务，提供 user 相关的接口，包括注册、登录、获取用户信息等
+│      ├─dal			# DAL 层，负责存储
+│      │  ├─db				# MySQL 相关代码
+│      │  └─rds				# Redis 相关代码
+│      ├─output			# 自动生成的代码
+│      ├─pack			# 数据打包/处理
+│      ├─script			# 运行脚本目录
+│      ├─service		# 封装了业务逻辑
+│      ├─build.sh		# 构建脚本
+│      ├─handler.go		# rpc接口定义，使用kitex自动生成
+│      └─main.go
+├─config			# 配置模块
+├─idl				# idl，proto接口定义文件
+├─kitex_gen			# kitex 自动生成的 rpc 接口包			
+├─logger			# 日志模块
+├─pkg				
+│  ├─errno			# 错误码
+│  ├─middleware		# rpc 中间件
+│  ├─tracer			# Jarger 初始化
+│  └─util			# 工具模块
+├─repo				# 负责数据存储层的初始化定义
+├─config.yml		# 配置文件
+├─build.sh			# 构建项目依赖的脚本
+└─run.sh			# 运行项目的脚本
+```
+
+## 项目运行
+
+> 环境要求：dokcer
+
+### 构建(导入新的包时需要执行)
 
 ```bash
-├─config		# 配置模块目录
-├─controller	# 控制器目录
-├─logger		# 日志模块目录
-├─models		# 模型目录，负责项目的数据存储部分，例如各个模块的Mysql表的读写模型。
-├─pkg			# 自定义的工具类等
-│  ├─e			# 项目统一的响应定义，如错误码，通用的错误信息，响应的结构体
-│  └─util		# 工具类目录
-├─public		# 静态资源目录
-├─repository	# 数据操作层，定义各种数据操作。
-├─requests		# 定义入参及入参校验规则
-├─responses		# 定义响应的数据
-├─router		# 路由目录
-├─service		# 服务定义目录
-├─temp			# 临时文件目录，包含日志等信息。
-├─config.yml	# 项目配置文件
-└─main.go		# 项目入口，负责Gin框架的初始化
+$ sh build.sh
+```
+
+### 运行
+
+```bash
+$ sh run.sh
 ```

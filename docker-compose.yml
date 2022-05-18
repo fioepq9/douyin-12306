@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: api.Dockerfile
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - "9090:9090"
+    depends_on:
+      - user
+
+  user:
+    build:
+      context: .
+      dockerfile: user.Dockerfile
+    platform: linux/x86_64
+    restart: always
+    depends_on:
+      - etcd
+      - jaeger
+
+  etcd:
+    image: 'bitnami/etcd:latest'
+    platform: linux/x86_64
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    platform: linux/x86_64
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"

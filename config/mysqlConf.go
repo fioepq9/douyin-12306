@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type mysqlConf struct {
 	User   string       `mapstructure:"user"`
 	Passwd string       `mapstructure:"passwd"`
@@ -16,14 +18,15 @@ func (mysqlConf) defaultConf() map[string]interface{} {
 		"host":    "0.0.0.0",
 		"port":    "3306",
 		"db_name": "douyin_12306",
+		"log":     mysqlLogConf{}.defaultConf(),
 	}
 }
 
 type mysqlLogConf struct {
-	Level                     string `mapstructure:"level"`
-	Out                       string `mapstructure:"out"`
-	SlowThreshold             int64  `mapstructure:"slow_threshold"`
-	IgnoreRecordNotFoundError bool   `mapstructure:"ignore_record_not_found_error"`
+	Level                     string        `mapstructure:"level"`
+	Out                       string        `mapstructure:"out"`
+	SlowThreshold             time.Duration `mapstructure:"slow_threshold"`
+	IgnoreRecordNotFoundError bool          `mapstructure:"ignore_record_not_found_error"`
 }
 
 func (mysqlLogConf) defaultConf() map[string]interface{} {

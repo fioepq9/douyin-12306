@@ -1,14 +1,26 @@
-main:
-  host: 0.0.0.0
-  port: 9090
+services:
+  api:
+    name: api
+    addr: api:9090
+    mode: debug   # debug, release, test
+    timeout: 5    # 单位: s
+  user:
+    name: user
+    addr: user:9091
+    client:
+      mux_connection: 1
+      rpc_timeout: 3    # 单位: s
+      conn_timeout: 50  # 单位: ms
+    server:
+      max_connections: 1000
+      max_qps: 100
+
+etcd:
+  address: etcd:2379
 
 log:
   level: debug  # panic, fatal, error, warn, info, debug, trace
   out: stdout   # stdout, [filepath]
-
-gin:
-  mode: debug   # debug, release, test
-  timeout: 5    # 单位: s
 
 mysql:
   user: root
@@ -22,10 +34,8 @@ mysql:
     slow_threshold: 500                   # 单位: ms
     ignore_record_not_found_error: false  # true, false
 
-
 redis:
   addr: 120.25.0.102:6379
   username:
   password: root
   db: 0
-

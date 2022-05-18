@@ -1,12 +1,13 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 const (
-	configRelPath  = "./"
+	configRelPath  = "../../"
 	configFileName = "config"
 	configFileType = "yml"
 )
@@ -15,20 +16,20 @@ const (
 var C config
 
 type config struct {
-	Main  mainConf  `mapstructure:"main"`
-	Log   logConf   `mapstructure:"log"`
-	Gin   ginConf   `mapstructure:"gin"`
-	MySQL mysqlConf `mapstructure:"mysql"`
-	Redis redisConf `mapstructure:"redis"`
+	Services servicesConf `mapstructure:"services"`
+	Etcd     etcdConf     `mapstructure:"etcd"`
+	Log      logConf      `mapstructure:"log"`
+	MySQL    mysqlConf    `mapstructure:"mysql"`
+	Redis    redisConf    `mapstructure:"redis"`
 }
 
 func init() {
 	var err error
 
 	// default config setting
-	viper.SetDefault("main", mainConf{}.defaultConf())
+	viper.SetDefault("services", servicesConf{}.defaultConf())
+	viper.SetDefault("etcd", etcdConf{}.defaultConf())
 	viper.SetDefault("log", logConf{}.defaultConf())
-	viper.SetDefault("gin", ginConf{}.defaultConf())
 	viper.SetDefault("mysql", mysqlConf{}.defaultConf())
 	viper.SetDefault("redis", redisConf{}.defaultConf())
 
@@ -49,7 +50,7 @@ func init() {
 	}
 
 	// unmarshal to C
-	err = viper.Unmarshal(&C)
+	err = viper.UnmarshalExact(&C)
 	if err != nil {
 		panic(err)
 	}

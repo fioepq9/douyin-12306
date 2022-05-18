@@ -1,9 +1,5 @@
 package logger
 
-import (
-	"douyin-12306/config"
-)
-
 var L logger
 
 type logger interface {
@@ -39,8 +35,5 @@ type logger interface {
 }
 
 func init() {
-	L = NewZapLogger(config.C.Log.Out, config.C.Log.Level)
-	L.Infow("Init logger success", map[string]interface{}{
-		"Logger config": config.C.Log,
-	})
+	L = NewZapLogger("stdout", "info")
 }
