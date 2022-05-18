@@ -1,7 +1,10 @@
 package service
 
 import (
+	"douyin-12306/repository"
 	"douyin-12306/responses"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"sync"
 )
 
@@ -20,7 +23,20 @@ func NewFeedServiceInstance() *FeedService {
 	return feedService
 }
 
-func (feedService *FeedService) GetFeed(latestTime int64, token string) ([]responses.Video, error) {
+func (feedService *FeedService) GetFeed(ctx *gin.Context, latestTime int64) (*responses.VideoInfo, error) {
 
-	return nil, nil
+	//@todo
+	//id := util.GetUser(ctx).Id
+	videoDtoList, err := repository.NewVideoDAOInstance().GetFeed(ctx, latestTime, 0)
+	if err != nil {
+		return nil, err
+	}
+	//nextTime := videoDtoList[len(videoDtoList)-1].PublishTime
+	var videoList []responses.Video
+	copier.Copy(videoList, videoDtoList)
+	videoInfo := responses.VideoInfo{
+		VideoList: videoList,
+		NextTime:  0,
+	}
+	return &videoInfo, err
 }
