@@ -132,13 +132,15 @@ func (d *UserDAO) GetUserByUsername(ctx context.Context, username string) (*mode
 func (d *UserDAO) GetUserRespByUserId(ctx context.Context, selectUserId int64, curUserId int64) (*responses.User, error) {
 	var userResp responses.User
 	db := R.MySQL
-	err := db.WithContext(ctx).Table(models.User{}.TableName()).Select("*, IF(EXISTS(?), TRUE, FALSE) as is_follow",
-		db.Table(models.UserFollow{}.TableName()).Where(models.UserFollow{
-			UserId:     selectUserId,
-			FollowerId: curUserId,
-		})).Where(models.User{
-		Id: selectUserId,
-	}).Take(&userResp).Error
+
+	// 使用连表查询
+	err := db.WithContext(ctx).
+		Table(models.User{}.TableName()).
+		Joins("LEFT JOIN user_follow uf ON `user`.id = uf.user_id AND uf.follower_id=?", curUserId).
+		Where(models.User{Id: selectUserId}).
+		Select("`user`.*, IF(uf.follower_id IS NULL,FALSE, TRUE) 'is_follow'").
+		Take(&userResp).Error
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("用户不存在")
