@@ -21,26 +21,29 @@ func notAllow(c *gin.Context) {
 	})
 }
 
-func Authorization() gin.HandlerFunc {
+// CheckTokenAndSaveUser 检查token，如果有则：
+// 1.使用token从redis中查询用户信息，保存到上下文中
+// 2.刷新token缓存时间
+func CheckTokenAndSaveUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 1.从query中取出token
-		token, ok := c.GetQuery("token")
-		logger.L.Debugw("Authorization", map[string]interface{}{
+		token, hasToken := c.GetQuery("token")
+		logger.L.Debugw("CheckTokenAndSaveUser", map[string]interface{}{
 			"token in Query": token,
 		})
-		// token不存在
-		if !ok {
-			notAllow(c)
+		// 请求中token不存在，直接返回
+		if !hasToken {
+			c.Next()
 			return
 		}
-		// 2.查询redis，得到userDTO
+		// 2.根据token查询redis，得到userDTO
 		userDTO := &dto.UserSimpleDTO{}
 		userKey := service.TokenPrefix + token
 		err := repository.R.Redis.Get(c, userKey).Scan(userDTO)
-		// token在redis中不存在
+		// token在redis中不存在，返回
 		if err == redis.Nil {
 			logger.L.Debug("token not found in Redis")
-			notAllow(c)
+			c.Next()
 			return
 		}
 
@@ -49,5 +52,21 @@ func Authorization() gin.HandlerFunc {
 
 		// 4.刷新token存在时间
 		repository.R.Redis.Expire(c, userKey, models.User{}.Expiration())
+		c.Next()
+	}
+}
+
+// Authorization 对未登录用户进行拦截
+func Authorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 1.经过CheckTokenAndSaveUser中间件后查看是否存在用户信息
+		user := util.GetUser(c)
+		if user == nil {
+			// 不存在登录用户，拦截
+			notAllow(c)
+			return
+		}
+		// 登录用户存在，放行
+		c.Next()
 	}
 }

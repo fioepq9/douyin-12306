@@ -17,11 +17,17 @@ func Register(r *gin.Engine) {
 	// 超时中间件
 	apiRouter.Use(middleware.Timeout(time.Duration(config.C.Gin.Timeout) * time.Second))
 	// basic apis
-	apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
 
-	// 登录验证中间件
+	// 检查token并设置用户信息中间件
+	apiRouter.Use(middleware.CheckTokenAndSaveUser())
+	apiRouter.GET("/feed/", controller.Feed)
+
+	// 来自extra apis - II，它不需要登录认证
+	apiRouter.GET("/comment/list/", controller.CommentList)
+
+	// 为部分接口添加登录拦截中间件
 	apiRouter.Use(middleware.Authorization())
 	apiRouter.GET("/user/", controller.UserInfo)
 	apiRouter.POST("/publish/action/", controller.Publish)
@@ -31,7 +37,6 @@ func Register(r *gin.Engine) {
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
 	apiRouter.GET("/favorite/list/", controller.FavoriteList)
 	apiRouter.POST("/comment/action/", controller.CommentAction)
-	apiRouter.GET("/comment/list/", controller.CommentList)
 
 	// extra apis - II
 	apiRouter.POST("/relation/action/", controller.RelationAction)

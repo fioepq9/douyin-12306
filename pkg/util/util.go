@@ -38,8 +38,11 @@ func SetUser(c *gin.Context, userDTO *dto.UserSimpleDTO) {
 	c.Set("user", userDTO)
 }
 
-// GetUser 从上下文中取出用户信息
+// GetUser 从上下文中取出用户信息，没有登录用户时返回nil
 func GetUser(c *gin.Context) *dto.UserSimpleDTO {
-	get := c.MustGet("user")
-	return get.(*dto.UserSimpleDTO)
+	user, exists := c.Get("user")
+	if exists {
+		return user.(*dto.UserSimpleDTO)
+	}
+	return nil
 }
