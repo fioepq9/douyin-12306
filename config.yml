@@ -1,12 +1,12 @@
 services:
   api:
     name: api
-    addr: api:9090
+    addr: 0.0.0.0:9090
     mode: debug   # debug, release, test
     timeout: 5    # 单位: s
   user:
     name: user
-    addr: user:9091
+    addr: 0.0.0.0:9091
     client:
       mux_connection: 1
       rpc_timeout: 3    # 单位: s
@@ -16,7 +16,7 @@ services:
       max_qps: 100
 
 etcd:
-  address: etcd:2379
+  address: 0.0.0.0:2379
 
 log:
   level: debug  # panic, fatal, error, warn, info, debug, trace
