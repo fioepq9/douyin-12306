@@ -1,25 +1,17 @@
 package main
 
 import (
-	"douyin-12306/cmd/user/dal"
 	"douyin-12306/config"
-	userKitex "douyin-12306/kitex_gen/userKitex/userservice"
+	videoKitex "douyin-12306/kitex_gen/videoKitex/videoservice"
 	"douyin-12306/logger"
 	"douyin-12306/pkg/middleware"
-	"douyin-12306/pkg/tracer"
 	"net"
 
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 )
-
-func Init() {
-	tracer.InitJaeger(config.C.Services.User.Name)
-	dal.Init()
-}
 
 func main() {
 	logger.L = logger.NewZapLogger(config.C.Log.Out, config.C.Log.Level)
@@ -30,30 +22,30 @@ func main() {
 		logger.L.Panic(err)
 	}
 
-	addr, err := net.ResolveTCPAddr("tcp", config.C.Services.User.Addr)
+	addr, err := net.ResolveTCPAddr("tcp", config.C.Services.Video.Addr)
 	if err != nil {
 		logger.L.Panic(err)
 	}
-	Init()
-	svr := userKitex.NewServer(
-		new(UserServiceImpl),
+
+	svr := videoKitex.NewServer(
+		new(VideoServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: config.C.Services.User.Name,
+			ServiceName: config.C.Services.Video.Name,
 		}),
 		server.WithMiddleware(middleware.CommonMiddleware),
 		server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),
 		server.WithLimit(&limit.Option{
-			MaxConnections: config.C.Services.User.Server.MaxConnections,
-			MaxQPS:         config.C.Services.User.Server.MaxQPS,
+			MaxConnections: config.C.Services.Video.Server.MaxConnections,
+			MaxQPS:         config.C.Services.Video.Server.MaxQPS,
 		}),
 		server.WithMuxTransport(),
-		server.WithSuite(trace.NewDefaultServerSuite()),
 		server.WithRegistry(r),
 	)
 	logger.L.Infow("Init [service:user] serever", map[string]interface{}{
-		"config": config.C.Services.User.Server,
+		"config": config.C.Services.Video.Server,
 	})
+
 	err = svr.Run()
 	if err != nil {
 		logger.L.Fatal(err)

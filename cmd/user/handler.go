@@ -69,3 +69,21 @@ func (s *UserServiceImpl) QueryUserInfo(ctx context.Context, req *userKitex.User
 		User: user,
 	}, nil
 }
+
+// RelationAction implements the UserServiceImpl interface.
+func (s *UserServiceImpl) RelationAction(ctx context.Context, req *userKitex.RelationActionRequest) (resp *userKitex.RelationActionResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// QueryFollowList implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryFollowList(ctx context.Context, req *userKitex.FollowListRequest) (resp *userKitex.FollowListResponse, err error) {
+	// TODO: Your code here...
+	return
+}
+
+// QueryFollowerList implements the UserServiceImpl interface.
+func (s *UserServiceImpl) QueryFollowerList(ctx context.Context, req *userKitex.FollowerListRequest) (resp *userKitex.FollowerListResponse, err error) {
+	// TODO: Your code here...
+	return
+}

@@ -3,8 +3,9 @@ package config
 import "time"
 
 type servicesConf struct {
-	Api  apiServiceConf  `mapstructure:"api"`
-	User userServiceConf `mapstructure:"user"`
+	Api   apiServiceConf   `mapstructure:"api"`
+	User  userServiceConf  `mapstructure:"user"`
+	Video videoServiceConf `mapstructure:"video"`
 }
 
 func (servicesConf) defaultConf() map[string]interface{} {
@@ -31,28 +32,44 @@ func (apiServiceConf) defaultConf() map[string]interface{} {
 }
 
 type userServiceConf struct {
-	Name   string                `mapstructure:"name"`
-	Addr   string                `mapstructure:"addr"`
-	Client userServiceClientConf `mapstructure:"Client"`
-	Server userServiceServerConf `mapstructure:"Server"`
+	Name   string     `mapstructure:"name"`
+	Addr   string     `mapstructure:"addr"`
+	Client clientConf `mapstructure:"client"`
+	Server serverConf `mapstructure:"server"`
 }
 
 func (userServiceConf) defaultConf() map[string]interface{} {
 	return map[string]interface{}{
 		"name":   "user",
 		"addr":   "0.0.0.0:9091",
-		"client": userServiceClientConf{}.defaultConf(),
-		"server": userServiceServerConf{}.defaultConf(),
+		"client": clientConf{}.defaultConf(),
+		"server": serverConf{}.defaultConf(),
 	}
 }
 
-type userServiceClientConf struct {
+type videoServiceConf struct {
+	Name   string     `mapstructure:"name"`
+	Addr   string     `mapstructure:"addr"`
+	Client clientConf `mapstructure:"client"`
+	Server serverConf `mapstructure:"server"`
+}
+
+func (videoServiceConf) defaultConf() map[string]interface{} {
+	return map[string]interface{}{
+		"name":   "video",
+		"addr":   "0.0.0.0:9092",
+		"client": clientConf{}.defaultConf(),
+		"server": serverConf{}.defaultConf(),
+	}
+}
+
+type clientConf struct {
 	MuxConnection int           `mapstructure:"mux_connection"`
 	RpcTimeout    time.Duration `mapstructure:"rpc_timeout"`
 	ConnTimeout   time.Duration `mapstructure:"conn_timeout"`
 }
 
-func (userServiceClientConf) defaultConf() map[string]interface{} {
+func (clientConf) defaultConf() map[string]interface{} {
 	return map[string]interface{}{
 		"mux_connection": 1,
 		"rpc_timeout":    3,
@@ -60,12 +77,12 @@ func (userServiceClientConf) defaultConf() map[string]interface{} {
 	}
 }
 
-type userServiceServerConf struct {
+type serverConf struct {
 	MaxConnections int `mapstructure:"max_connections"`
 	MaxQPS         int `mapstructure:"max_qps"`
 }
 
-func (userServiceServerConf) defaultConf() map[string]interface{} {
+func (serverConf) defaultConf() map[string]interface{} {
 	return map[string]interface{}{
 		"max_connections": 1000,
 		"max_qps":         100,

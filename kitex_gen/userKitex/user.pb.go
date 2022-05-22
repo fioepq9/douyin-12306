@@ -540,6 +540,344 @@ func (x *UserInfoResponse) GetUser() *User {
 	return nil
 }
 
+type RelationActionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId     int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`             // 用户id
+	Token      string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                              // 用户鉴权token
+	ToUserId   int64  `protobuf:"varint,3,opt,name=to_user_id,json=toUserId,proto3" json:"to_user_id,omitempty"`     // 对方用户id
+	ActionType int32  `protobuf:"varint,4,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"` // 1-关注，2-取消关注
+}
+
+func (x *RelationActionRequest) Reset() {
+	*x = RelationActionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RelationActionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RelationActionRequest) ProtoMessage() {}
+
+func (x *RelationActionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RelationActionRequest.ProtoReflect.Descriptor instead.
+func (*RelationActionRequest) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RelationActionRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *RelationActionRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *RelationActionRequest) GetToUserId() int64 {
+	if x != nil {
+		return x.ToUserId
+	}
+	return 0
+}
+
+func (x *RelationActionRequest) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+type FollowListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // 用户id
+	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                  // 用户鉴权token
+}
+
+func (x *FollowListRequest) Reset() {
+	*x = FollowListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowListRequest) ProtoMessage() {}
+
+func (x *FollowListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowListRequest.ProtoReflect.Descriptor instead.
+func (*FollowListRequest) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *FollowListRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *FollowListRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type FollowerListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // 用户id
+	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                  // 用户鉴权token
+}
+
+func (x *FollowerListRequest) Reset() {
+	*x = FollowerListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowerListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowerListRequest) ProtoMessage() {}
+
+func (x *FollowerListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowerListRequest.ProtoReflect.Descriptor instead.
+func (*FollowerListRequest) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *FollowerListRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *FollowerListRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type RelationActionResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Response *Response `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+}
+
+func (x *RelationActionResponse) Reset() {
+	*x = RelationActionResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RelationActionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RelationActionResponse) ProtoMessage() {}
+
+func (x *RelationActionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RelationActionResponse.ProtoReflect.Descriptor instead.
+func (*RelationActionResponse) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *RelationActionResponse) GetResponse() *Response {
+	if x != nil {
+		return x.Response
+	}
+	return nil
+}
+
+type FollowListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Response *Response `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+	UserList []*User   `protobuf:"bytes,2,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"` // 用户信息列表
+}
+
+func (x *FollowListResponse) Reset() {
+	*x = FollowListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowListResponse) ProtoMessage() {}
+
+func (x *FollowListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowListResponse.ProtoReflect.Descriptor instead.
+func (*FollowListResponse) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *FollowListResponse) GetResponse() *Response {
+	if x != nil {
+		return x.Response
+	}
+	return nil
+}
+
+func (x *FollowListResponse) GetUserList() []*User {
+	if x != nil {
+		return x.UserList
+	}
+	return nil
+}
+
+type FollowerListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Response *Response `protobuf:"bytes,1,opt,name=response,proto3" json:"response,omitempty"`
+	UserList []*User   `protobuf:"bytes,2,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"` // 用户信息列表
+}
+
+func (x *FollowerListResponse) Reset() {
+	*x = FollowerListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_idl_user_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FollowerListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FollowerListResponse) ProtoMessage() {}
+
+func (x *FollowerListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_idl_user_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FollowerListResponse.ProtoReflect.Descriptor instead.
+func (*FollowerListResponse) Descriptor() ([]byte, []int) {
+	return file_idl_user_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *FollowerListResponse) GetResponse() *Response {
+	if x != nil {
+		return x.Response
+	}
+	return nil
+}
+
+func (x *FollowerListResponse) GetUserList() []*User {
+	if x != nil {
+		return x.UserList
+	}
+	return nil
+}
+
 var File_idl_user_proto protoreflect.FileDescriptor
 
 var file_idl_user_proto_rawDesc = []byte{
@@ -596,7 +934,42 @@ var file_idl_user_proto_rawDesc = []byte{
 	0x72, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1e, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04,
-	0x75, 0x73, 0x65, 0x72, 0x32, 0xd2, 0x01, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72,
+	0x75, 0x73, 0x65, 0x72, 0x22, 0x85, 0x01, 0x0a, 0x15, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17,
+	0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x1c, 0x0a,
+	0x0a, 0x74, 0x6f, 0x5f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x08, 0x74, 0x6f, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x0a, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x22, 0x42, 0x0a, 0x11,
+	0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x22, 0x44, 0x0a, 0x13, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64,
+	0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x44, 0x0a, 0x16, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x2a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x69, 0x0a, 0x12,
+	0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x2a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27,
+	0x0a, 0x09, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x0a, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x08, 0x75,
+	0x73, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x22, 0x6b, 0x0a, 0x14, 0x46, 0x6f, 0x6c, 0x6c, 0x6f,
+	0x77, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x2a, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x0e, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a, 0x09, 0x75,
+	0x73, 0x65, 0x72, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a,
+	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72,
+	0x4c, 0x69, 0x73, 0x74, 0x32, 0xb1, 0x03, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72,
 	0x76, 0x69, 0x63, 0x65, 0x12, 0x45, 0x0a, 0x0c, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
 	0x55, 0x73, 0x65, 0x72, 0x12, 0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72,
 	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
@@ -609,10 +982,24 @@ var file_idl_user_proto_rawDesc = []byte{
 	0x72, 0x79, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x15, 0x2e, 0x75, 0x73, 0x65,
 	0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x1a, 0x16, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66,
-	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x22, 0x5a, 0x20, 0x64, 0x6f, 0x75,
-	0x79, 0x69, 0x6e, 0x2d, 0x31, 0x32, 0x33, 0x30, 0x36, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f,
-	0x67, 0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x4b, 0x69, 0x74, 0x65, 0x78, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4b, 0x0a, 0x0e, 0x52, 0x65, 0x6c,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x2e, 0x75, 0x73,
+	0x65, 0x72, 0x2e, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e,
+	0x52, 0x65, 0x6c, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x0f, 0x51, 0x75, 0x65, 0x72, 0x79, 0x46,
+	0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65, 0x72,
+	0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4a, 0x0a, 0x11,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73,
+	0x74, 0x12, 0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65,
+	0x72, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x75,
+	0x73, 0x65, 0x72, 0x2e, 0x46, 0x6f, 0x6c, 0x6c, 0x6f, 0x77, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x22, 0x5a, 0x20, 0x64, 0x6f, 0x75, 0x79,
+	0x69, 0x6e, 0x2d, 0x31, 0x32, 0x33, 0x30, 0x36, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67,
+	0x65, 0x6e, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x4b, 0x69, 0x74, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -627,36 +1014,53 @@ func file_idl_user_proto_rawDescGZIP() []byte {
 	return file_idl_user_proto_rawDescData
 }
 
-var file_idl_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_idl_user_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_idl_user_proto_goTypes = []interface{}{
-	(*Response)(nil),             // 0: user.Response
-	(*LoginInfo)(nil),            // 1: user.LoginInfo
-	(*User)(nil),                 // 2: user.User
-	(*UserRegisterRequest)(nil),  // 3: user.UserRegisterRequest
-	(*UserLoginRequest)(nil),     // 4: user.UserLoginRequest
-	(*UserInfoRequest)(nil),      // 5: user.UserInfoRequest
-	(*UserRegisterResponse)(nil), // 6: user.UserRegisterResponse
-	(*UserLoginResponse)(nil),    // 7: user.UserLoginResponse
-	(*UserInfoResponse)(nil),     // 8: user.UserInfoResponse
+	(*Response)(nil),               // 0: user.Response
+	(*LoginInfo)(nil),              // 1: user.LoginInfo
+	(*User)(nil),                   // 2: user.User
+	(*UserRegisterRequest)(nil),    // 3: user.UserRegisterRequest
+	(*UserLoginRequest)(nil),       // 4: user.UserLoginRequest
+	(*UserInfoRequest)(nil),        // 5: user.UserInfoRequest
+	(*UserRegisterResponse)(nil),   // 6: user.UserRegisterResponse
+	(*UserLoginResponse)(nil),      // 7: user.UserLoginResponse
+	(*UserInfoResponse)(nil),       // 8: user.UserInfoResponse
+	(*RelationActionRequest)(nil),  // 9: user.RelationActionRequest
+	(*FollowListRequest)(nil),      // 10: user.FollowListRequest
+	(*FollowerListRequest)(nil),    // 11: user.FollowerListRequest
+	(*RelationActionResponse)(nil), // 12: user.RelationActionResponse
+	(*FollowListResponse)(nil),     // 13: user.FollowListResponse
+	(*FollowerListResponse)(nil),   // 14: user.FollowerListResponse
 }
 var file_idl_user_proto_depIdxs = []int32{
-	0, // 0: user.UserRegisterResponse.response:type_name -> user.Response
-	1, // 1: user.UserRegisterResponse.login_info:type_name -> user.LoginInfo
-	0, // 2: user.UserLoginResponse.response:type_name -> user.Response
-	1, // 3: user.UserLoginResponse.login_info:type_name -> user.LoginInfo
-	0, // 4: user.UserInfoResponse.response:type_name -> user.Response
-	2, // 5: user.UserInfoResponse.user:type_name -> user.User
-	3, // 6: user.UserService.RegisterUser:input_type -> user.UserRegisterRequest
-	4, // 7: user.UserService.LoginUser:input_type -> user.UserLoginRequest
-	5, // 8: user.UserService.QueryUserInfo:input_type -> user.UserInfoRequest
-	6, // 9: user.UserService.RegisterUser:output_type -> user.UserRegisterResponse
-	7, // 10: user.UserService.LoginUser:output_type -> user.UserLoginResponse
-	8, // 11: user.UserService.QueryUserInfo:output_type -> user.UserInfoResponse
-	9, // [9:12] is the sub-list for method output_type
-	6, // [6:9] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	0,  // 0: user.UserRegisterResponse.response:type_name -> user.Response
+	1,  // 1: user.UserRegisterResponse.login_info:type_name -> user.LoginInfo
+	0,  // 2: user.UserLoginResponse.response:type_name -> user.Response
+	1,  // 3: user.UserLoginResponse.login_info:type_name -> user.LoginInfo
+	0,  // 4: user.UserInfoResponse.response:type_name -> user.Response
+	2,  // 5: user.UserInfoResponse.user:type_name -> user.User
+	0,  // 6: user.RelationActionResponse.response:type_name -> user.Response
+	0,  // 7: user.FollowListResponse.response:type_name -> user.Response
+	2,  // 8: user.FollowListResponse.user_list:type_name -> user.User
+	0,  // 9: user.FollowerListResponse.response:type_name -> user.Response
+	2,  // 10: user.FollowerListResponse.user_list:type_name -> user.User
+	3,  // 11: user.UserService.RegisterUser:input_type -> user.UserRegisterRequest
+	4,  // 12: user.UserService.LoginUser:input_type -> user.UserLoginRequest
+	5,  // 13: user.UserService.QueryUserInfo:input_type -> user.UserInfoRequest
+	9,  // 14: user.UserService.RelationAction:input_type -> user.RelationActionRequest
+	10, // 15: user.UserService.QueryFollowList:input_type -> user.FollowListRequest
+	11, // 16: user.UserService.QueryFollowerList:input_type -> user.FollowerListRequest
+	6,  // 17: user.UserService.RegisterUser:output_type -> user.UserRegisterResponse
+	7,  // 18: user.UserService.LoginUser:output_type -> user.UserLoginResponse
+	8,  // 19: user.UserService.QueryUserInfo:output_type -> user.UserInfoResponse
+	12, // 20: user.UserService.RelationAction:output_type -> user.RelationActionResponse
+	13, // 21: user.UserService.QueryFollowList:output_type -> user.FollowListResponse
+	14, // 22: user.UserService.QueryFollowerList:output_type -> user.FollowerListResponse
+	17, // [17:23] is the sub-list for method output_type
+	11, // [11:17] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_idl_user_proto_init() }
@@ -773,6 +1177,78 @@ func file_idl_user_proto_init() {
 				return nil
 			}
 		}
+		file_idl_user_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RelationActionRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_user_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowListRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowerListRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RelationActionResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_user_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_idl_user_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FollowerListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -780,7 +1256,7 @@ func file_idl_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_idl_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -802,4 +1278,7 @@ type UserService interface {
 	RegisterUser(ctx context.Context, req *UserRegisterRequest) (res *UserRegisterResponse, err error)
 	LoginUser(ctx context.Context, req *UserLoginRequest) (res *UserLoginResponse, err error)
 	QueryUserInfo(ctx context.Context, req *UserInfoRequest) (res *UserInfoResponse, err error)
+	RelationAction(ctx context.Context, req *RelationActionRequest) (res *RelationActionResponse, err error)
+	QueryFollowList(ctx context.Context, req *FollowListRequest) (res *FollowListResponse, err error)
+	QueryFollowerList(ctx context.Context, req *FollowerListRequest) (res *FollowerListResponse, err error)
 }

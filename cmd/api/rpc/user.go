@@ -7,6 +7,7 @@ import (
 	"douyin-12306/kitex_gen/userKitex/userservice"
 	"douyin-12306/logger"
 	"douyin-12306/pkg/errno"
+	"douyin-12306/pkg/middleware"
 	"time"
 
 	"github.com/cloudwego/kitex/client"
@@ -26,6 +27,8 @@ func initUserRpc() {
 	}
 	c, err := userservice.NewClient(
 		config.C.Services.User.Name,
+		client.WithMiddleware(middleware.CommonMiddleware),
+		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(config.C.Services.User.Client.MuxConnection),
 		client.WithRPCTimeout(config.C.Services.User.Client.RpcTimeout*time.Second),
 		client.WithConnectTimeout(config.C.Services.User.Client.ConnTimeout*time.Millisecond),

@@ -14,6 +14,9 @@ type Client interface {
 	RegisterUser(ctx context.Context, Req *userKitex.UserRegisterRequest, callOptions ...callopt.Option) (r *userKitex.UserRegisterResponse, err error)
 	LoginUser(ctx context.Context, Req *userKitex.UserLoginRequest, callOptions ...callopt.Option) (r *userKitex.UserLoginResponse, err error)
 	QueryUserInfo(ctx context.Context, Req *userKitex.UserInfoRequest, callOptions ...callopt.Option) (r *userKitex.UserInfoResponse, err error)
+	RelationAction(ctx context.Context, Req *userKitex.RelationActionRequest, callOptions ...callopt.Option) (r *userKitex.RelationActionResponse, err error)
+	QueryFollowList(ctx context.Context, Req *userKitex.FollowListRequest, callOptions ...callopt.Option) (r *userKitex.FollowListResponse, err error)
+	QueryFollowerList(ctx context.Context, Req *userKitex.FollowerListRequest, callOptions ...callopt.Option) (r *userKitex.FollowerListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +61,19 @@ func (p *kUserServiceClient) LoginUser(ctx context.Context, Req *userKitex.UserL
 func (p *kUserServiceClient) QueryUserInfo(ctx context.Context, Req *userKitex.UserInfoRequest, callOptions ...callopt.Option) (r *userKitex.UserInfoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryUserInfo(ctx, Req)
+}
+
+func (p *kUserServiceClient) RelationAction(ctx context.Context, Req *userKitex.RelationActionRequest, callOptions ...callopt.Option) (r *userKitex.RelationActionResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RelationAction(ctx, Req)
+}
+
+func (p *kUserServiceClient) QueryFollowList(ctx context.Context, Req *userKitex.FollowListRequest, callOptions ...callopt.Option) (r *userKitex.FollowListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryFollowList(ctx, Req)
+}
+
+func (p *kUserServiceClient) QueryFollowerList(ctx context.Context, Req *userKitex.FollowerListRequest, callOptions ...callopt.Option) (r *userKitex.FollowerListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryFollowerList(ctx, Req)
 }

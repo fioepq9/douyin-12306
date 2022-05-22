@@ -22,9 +22,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*userKitex.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"RegisterUser":  kitex.NewMethodInfo(registerUserHandler, newRegisterUserArgs, newRegisterUserResult, false),
-		"LoginUser":     kitex.NewMethodInfo(loginUserHandler, newLoginUserArgs, newLoginUserResult, false),
-		"QueryUserInfo": kitex.NewMethodInfo(queryUserInfoHandler, newQueryUserInfoArgs, newQueryUserInfoResult, false),
+		"RegisterUser":      kitex.NewMethodInfo(registerUserHandler, newRegisterUserArgs, newRegisterUserResult, false),
+		"LoginUser":         kitex.NewMethodInfo(loginUserHandler, newLoginUserArgs, newLoginUserResult, false),
+		"QueryUserInfo":     kitex.NewMethodInfo(queryUserInfoHandler, newQueryUserInfoArgs, newQueryUserInfoResult, false),
+		"RelationAction":    kitex.NewMethodInfo(relationActionHandler, newRelationActionArgs, newRelationActionResult, false),
+		"QueryFollowList":   kitex.NewMethodInfo(queryFollowListHandler, newQueryFollowListArgs, newQueryFollowListResult, false),
+		"QueryFollowerList": kitex.NewMethodInfo(queryFollowerListHandler, newQueryFollowerListArgs, newQueryFollowerListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -349,6 +352,315 @@ func (p *QueryUserInfoResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
+func relationActionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(userKitex.RelationActionRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(userKitex.UserService).RelationAction(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *RelationActionArgs:
+		success, err := handler.(userKitex.UserService).RelationAction(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RelationActionResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newRelationActionArgs() interface{} {
+	return &RelationActionArgs{}
+}
+
+func newRelationActionResult() interface{} {
+	return &RelationActionResult{}
+}
+
+type RelationActionArgs struct {
+	Req *userKitex.RelationActionRequest
+}
+
+func (p *RelationActionArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in RelationActionArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RelationActionArgs) Unmarshal(in []byte) error {
+	msg := new(userKitex.RelationActionRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RelationActionArgs_Req_DEFAULT *userKitex.RelationActionRequest
+
+func (p *RelationActionArgs) GetReq() *userKitex.RelationActionRequest {
+	if !p.IsSetReq() {
+		return RelationActionArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RelationActionArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type RelationActionResult struct {
+	Success *userKitex.RelationActionResponse
+}
+
+var RelationActionResult_Success_DEFAULT *userKitex.RelationActionResponse
+
+func (p *RelationActionResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in RelationActionResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RelationActionResult) Unmarshal(in []byte) error {
+	msg := new(userKitex.RelationActionResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RelationActionResult) GetSuccess() *userKitex.RelationActionResponse {
+	if !p.IsSetSuccess() {
+		return RelationActionResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RelationActionResult) SetSuccess(x interface{}) {
+	p.Success = x.(*userKitex.RelationActionResponse)
+}
+
+func (p *RelationActionResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func queryFollowListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(userKitex.FollowListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(userKitex.UserService).QueryFollowList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *QueryFollowListArgs:
+		success, err := handler.(userKitex.UserService).QueryFollowList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*QueryFollowListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newQueryFollowListArgs() interface{} {
+	return &QueryFollowListArgs{}
+}
+
+func newQueryFollowListResult() interface{} {
+	return &QueryFollowListResult{}
+}
+
+type QueryFollowListArgs struct {
+	Req *userKitex.FollowListRequest
+}
+
+func (p *QueryFollowListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in QueryFollowListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *QueryFollowListArgs) Unmarshal(in []byte) error {
+	msg := new(userKitex.FollowListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var QueryFollowListArgs_Req_DEFAULT *userKitex.FollowListRequest
+
+func (p *QueryFollowListArgs) GetReq() *userKitex.FollowListRequest {
+	if !p.IsSetReq() {
+		return QueryFollowListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *QueryFollowListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type QueryFollowListResult struct {
+	Success *userKitex.FollowListResponse
+}
+
+var QueryFollowListResult_Success_DEFAULT *userKitex.FollowListResponse
+
+func (p *QueryFollowListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in QueryFollowListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *QueryFollowListResult) Unmarshal(in []byte) error {
+	msg := new(userKitex.FollowListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *QueryFollowListResult) GetSuccess() *userKitex.FollowListResponse {
+	if !p.IsSetSuccess() {
+		return QueryFollowListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *QueryFollowListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*userKitex.FollowListResponse)
+}
+
+func (p *QueryFollowListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func queryFollowerListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(userKitex.FollowerListRequest)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(userKitex.UserService).QueryFollowerList(ctx, req)
+		if err != nil {
+			return err
+		}
+		if err := st.SendMsg(resp); err != nil {
+			return err
+		}
+	case *QueryFollowerListArgs:
+		success, err := handler.(userKitex.UserService).QueryFollowerList(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*QueryFollowerListResult)
+		realResult.Success = success
+	}
+	return nil
+}
+func newQueryFollowerListArgs() interface{} {
+	return &QueryFollowerListArgs{}
+}
+
+func newQueryFollowerListResult() interface{} {
+	return &QueryFollowerListResult{}
+}
+
+type QueryFollowerListArgs struct {
+	Req *userKitex.FollowerListRequest
+}
+
+func (p *QueryFollowerListArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, fmt.Errorf("No req in QueryFollowerListArgs")
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *QueryFollowerListArgs) Unmarshal(in []byte) error {
+	msg := new(userKitex.FollowerListRequest)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var QueryFollowerListArgs_Req_DEFAULT *userKitex.FollowerListRequest
+
+func (p *QueryFollowerListArgs) GetReq() *userKitex.FollowerListRequest {
+	if !p.IsSetReq() {
+		return QueryFollowerListArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *QueryFollowerListArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+type QueryFollowerListResult struct {
+	Success *userKitex.FollowerListResponse
+}
+
+var QueryFollowerListResult_Success_DEFAULT *userKitex.FollowerListResponse
+
+func (p *QueryFollowerListResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, fmt.Errorf("No req in QueryFollowerListResult")
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *QueryFollowerListResult) Unmarshal(in []byte) error {
+	msg := new(userKitex.FollowerListResponse)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *QueryFollowerListResult) GetSuccess() *userKitex.FollowerListResponse {
+	if !p.IsSetSuccess() {
+		return QueryFollowerListResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *QueryFollowerListResult) SetSuccess(x interface{}) {
+	p.Success = x.(*userKitex.FollowerListResponse)
+}
+
+func (p *QueryFollowerListResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -384,6 +696,36 @@ func (p *kClient) QueryUserInfo(ctx context.Context, Req *userKitex.UserInfoRequ
 	_args.Req = Req
 	var _result QueryUserInfoResult
 	if err = p.c.Call(ctx, "QueryUserInfo", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RelationAction(ctx context.Context, Req *userKitex.RelationActionRequest) (r *userKitex.RelationActionResponse, err error) {
+	var _args RelationActionArgs
+	_args.Req = Req
+	var _result RelationActionResult
+	if err = p.c.Call(ctx, "RelationAction", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryFollowList(ctx context.Context, Req *userKitex.FollowListRequest) (r *userKitex.FollowListResponse, err error) {
+	var _args QueryFollowListArgs
+	_args.Req = Req
+	var _result QueryFollowListResult
+	if err = p.c.Call(ctx, "QueryFollowList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryFollowerList(ctx context.Context, Req *userKitex.FollowerListRequest) (r *userKitex.FollowerListResponse, err error) {
+	var _args QueryFollowerListArgs
+	_args.Req = Req
+	var _result QueryFollowerListResult
+	if err = p.c.Call(ctx, "QueryFollowerList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
