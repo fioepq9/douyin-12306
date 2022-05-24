@@ -17,8 +17,9 @@ func Feed(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusOK, responses.FeedResponse{
-			Response: responses.Response{StatusCode: 1, StatusMsg: "参数格式错误"},
+			Response: responses.Response{StatusCode: 1, StatusMsg: "请求参数格式错误"},
 		})
+		return
 	}
 
 	if req.LatestTime == 0 {
@@ -27,10 +28,25 @@ func Feed(c *gin.Context) {
 
 	//var videoList
 	videoInfo, err := service.NewFeedServiceInstance().GetFeed(c, req.LatestTime)
+	if err != nil {
+		c.JSON(
+			http.StatusOK,
+			responses.FeedResponse{
+				Response: responses.Response{StatusCode: 1, StatusMsg: "获取视频资源失败"},
+			},
+		)
+		return
+	}
+	var message string
+	if len(videoInfo.VideoList) == 0 {
+		message = "暂无更多视频资源！"
+	} else {
+		message = "获取视频资源成功！"
+	}
 	c.JSON(
 		http.StatusOK,
 		responses.FeedResponse{
-			Response:  responses.Response{StatusCode: 0},
+			Response:  responses.Response{StatusCode: 0, StatusMsg: message},
 			VideoInfo: *videoInfo,
 		},
 	)
